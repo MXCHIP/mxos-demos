@@ -118,7 +118,7 @@ merr_t application_start( void *arg )
     require_action( app_context, exit, err = kNoMemoryErr );
 
     /* Create mico system context and read application's config data from flash */
-    mxos_context = mxos_system_context_init( sizeof(application_config_t) );
+    mxos_context = system_context_init( sizeof(application_config_t) );
     app_context->appConfig = mxos_system_context_get_user_data( mxos_context );
 
     /* mico system initialize */

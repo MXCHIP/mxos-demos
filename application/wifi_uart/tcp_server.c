@@ -40,7 +40,7 @@ static app_context_t *context;
 
 mos_thread_id_t   localTcpClient_thread_handler;
 
-void localTcpServer_thread(void* arg)
+void tcp_server_thread(void* arg)
 {
   merr_t err = kUnknownErr;
   int j;

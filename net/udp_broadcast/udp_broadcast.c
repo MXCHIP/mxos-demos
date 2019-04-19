@@ -84,7 +84,7 @@ int application_start( void )
     merr_t err = kNoErr;
 
     /* Start MiCO system functions according to mxos_config.h */
-    err = mxos_system_init( mxos_system_context_init( 0 ) );
+    err = mxos_system_init( system_context_init( 0 ) );
     require_noerr( err, exit );
 
     err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "udp_broadcast", udp_broadcast_thread, 0x800, 0 );

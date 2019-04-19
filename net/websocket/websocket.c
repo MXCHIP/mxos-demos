@@ -67,7 +67,7 @@ int main( void )
     require_noerr( err, exit );
 
     /* Start MiCO system functions according to mxos_config.h */
-    err = mxos_system_init( mxos_system_context_init( 0 ) );
+    err = mxos_system_init( system_context_init( 0 ) );
     require_noerr( err, exit );
 
     /* Wait for wlan connection*/

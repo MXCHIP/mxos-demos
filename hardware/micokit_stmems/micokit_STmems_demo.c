@@ -62,7 +62,7 @@ int application_start( void )
   mxos_system_status_wlan_t* wlan_status;
   
   /* Start MiCO system functions according to mxos_config.h*/
-  err = mxos_system_init( mxos_system_context_init( 0 ) );
+  err = mxos_system_init( system_context_init( 0 ) );
   require_noerr_string( err, exit, "ERROR: Unable to Init MiCO core" );
   
   micokit_STmems_init();

@@ -54,7 +54,7 @@ void clientNotify_WifiStatusHandler(int event, void* arg )
   return;
 }
 
-void remoteTcpClient_thread(void* arg)
+void tcp_client_thread(void* arg)
 {
   merr_t err = kUnknownErr;
   int len;

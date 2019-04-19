@@ -39,7 +39,7 @@
 int application_start( void )
 {
   /* Start MiCO system functions according to mxos_config.h*/
-  mxos_system_init( mxos_system_context_init( 0 ) );
+  mxos_system_init( system_context_init( 0 ) );
   
   /* Output on debug serial port */
   http_server_log( "http server Demo!" );

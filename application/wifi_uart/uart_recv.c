@@ -34,7 +34,7 @@
 
 static size_t _uart_get_one_packet(uint8_t* buf, int maxlen);
 
-void uartRecv_thread(void* arg)
+void uart_recv_thread(void* arg)
 {
   app_context_t *Context = (app_context_t *)arg;
   int recvlen;

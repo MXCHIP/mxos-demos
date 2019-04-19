@@ -45,7 +45,7 @@ int main( void )
     //mxos_network_switch_interface_manual(INTERFACE_ETH);
     
     /* Start MiCO system functions according to mxos_config.h*/
-    err = mxos_system_init( mxos_system_context_init( 0 ) );
+    err = mxos_system_init( system_context_init( 0 ) );
     require_noerr( err, exit );
     
     while ( 1 ) {

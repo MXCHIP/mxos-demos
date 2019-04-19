@@ -68,7 +68,7 @@ static const struct cli_command _test_cmds[] = {
 int application_start( void )
 {
   /* Start MiCO system functions according to mxos_config.h*/
-  mxos_system_init( mxos_system_context_init( 0 ) );
+  mxos_system_init( system_context_init( 0 ) );
 
   cli_register_commands(&_test_cmds, sizeof(_test_cmds)/sizeof(struct cli_command));
 }

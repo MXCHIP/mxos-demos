@@ -47,7 +47,7 @@ static void micoNotify_ApListCallback( ScanResult *pApList )
 int main( void )
 {
     /* Start MiCO system functions according to mxos_config.h*/
-    mxos_system_init( mxos_system_context_init( 0 ) );
+    mxos_system_init( system_context_init( 0 ) );
 
     /* Register user function when wlan scan is completed */
     mxos_system_notify_register( mxos_notify_WIFI_SCAN_COMPLETED, (void *) micoNotify_ApListCallback, NULL );

@@ -42,7 +42,7 @@ int main( void )
     network_InitTypeDef_st wNetConfig;
 
     /* Setup WI-Fi and tcpip stack*/
-    mxos_Context_t* context = mxos_system_context_init( 0 );
+    mxos_Context_t* context = system_context_init( 0 );
     mxos_system_init( context );
 
     /* Setup Soft AP*/

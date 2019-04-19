@@ -1,14 +1,13 @@
 /**
  ******************************************************************************
- * @file    MICOAppDefine.h
+ * @file    main.h
  * @author  William Xu
  * @version V1.0.0
  * @date    05-May-2014
- * @brief   This file create a TCP listener thread, accept every TCP client
- *          connection and create thread for them.
+ * @brief   Application's header file.
  ******************************************************************************
  *  The MIT License
- *  Copyright (c) 2014 MXCHIP Inc.
+ *  Copyright (c) 2019 MXCHIP Inc.
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -45,9 +44,6 @@ extern "C" {
 #define uart_recv_log(M, ...) MXOS_LOG(CONFIG_APP_DEBUG, "UART_RECV", M, ##__VA_ARGS__) 
 #define spp_log(M, ...)       MXOS_LOG(CONFIG_APP_DEBUG, "SPP", M, ##__VA_ARGS__) 
 
-/* Demo C function call C++ function and C++ function call C function */
-//#define mxos_C_CPP_MIXING_DEMO
-
 /*User provided configurations*/
 #define CONFIGURATION_VERSION               0x00000002 // if default configuration is changed, update this number
 #define MAX_QUEUE_NUM                       6  // 1 remote client, 5 local server
@@ -64,13 +60,11 @@ extern "C" {
 #define REMOTE_TCP_CLIENT_LOOPBACK_PORT     1002
 #define RECVED_UART_DATA_LOOPBACK_PORT      1003
 
-#define BONJOUR_SERVICE                     "_easylink._tcp.local."
-
 /* Define thread stack size */
 #define STACK_SIZE_UART_RECV_THREAD           0x2A0
-#define STACK_SIZE_LOCAL_TCP_SERVER_THREAD    0x300
+#define STACK_SIZE_TCP_SERVER_THREAD    0x300
 #define STACK_SIZE_LOCAL_TCP_CLIENT_THREAD    0x350
-#define STACK_SIZE_REMOTE_TCP_CLIENT_THREAD   0x500
+#define STACK_SIZE_TCP_CLIENT_THREAD   0x500
 
 typedef struct _socket_msg {
   int ref;
@@ -85,8 +79,7 @@ typedef struct
   uint32_t          localServerPort;
 
   /*local services*/
-  bool              localServerEnable;
-  bool              remoteServerEnable;
+  bool              tcp_client_enable;
   char              remoteServerDomain[64];
   int               remoteServerPort;
 
@@ -112,9 +105,9 @@ typedef struct _app_context_t
 } app_context_t;
 
 application_config_t* app_contex_init(void);
-void localTcpServer_thread( void *inContext );
-void remoteTcpClient_thread( void *inContext );
-void uartRecv_thread( void *inContext );
+void tcp_server_thread( void *inContext );
+void tcp_client_thread( void *inContext );
+void uart_recv_thread( void *inContext );
 
 #ifdef __cplusplus
 } /*extern "C" */

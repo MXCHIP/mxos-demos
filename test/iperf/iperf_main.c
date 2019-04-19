@@ -52,7 +52,7 @@ int application_start( void )
     require_noerr( err, exit );
 
     /* Start MiCO system functions according to mxos_config.h */
-    mxos_system_init( mxos_system_context_init( 0 ) );
+    mxos_system_init( system_context_init( 0 ) );
 
     /* Register iperf command to test   */
     iperf_cli_register();

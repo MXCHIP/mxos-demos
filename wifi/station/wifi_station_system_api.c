@@ -38,7 +38,7 @@ int main( void )
      Define macro mxos_WLAN_CONNECTION_ENABLE to enable wlan connection function
      Select wlan configuration mode: mxos_WLAN_CONFIG_MODE
      Define EasyLink settings */
-  mxos_Context_t* context = mxos_system_context_init( 0 );
+  mxos_Context_t* context = system_context_init( 0 );
   mxos_system_init( context );
   
   return err;

@@ -51,18 +51,16 @@ application_config_t* app_contex_init(void)
         app_log( "Use default APP configuration!" );
         p_config->configDataVer = CONFIGURATION_VERSION;
         p_config->localServerPort = LOCAL_PORT;
-        p_config->localServerEnable = true;
         p_config->USART_BaudRate = 115200;
-        p_config->remoteServerEnable = true;
+        p_config->tcp_client_enable = true;
         sprintf( p_config->remoteServerDomain, DEAFULT_REMOTE_SERVER );
         p_config->remoteServerPort = DEFAULT_REMOTE_SERVER_PORT;
     }
     else {
         CONTEXT_READ( kv_err, p_config, configDataVer );
         CONTEXT_READ( kv_err, p_config, localServerPort );
-        CONTEXT_READ( kv_err, p_config, localServerEnable );
         CONTEXT_READ( kv_err, p_config, USART_BaudRate );
-        CONTEXT_READ( kv_err, p_config, remoteServerEnable );
+        CONTEXT_READ( kv_err, p_config, tcp_client_enable );
         CONTEXT_READ( kv_err, p_config, remoteServerDomain );
         CONTEXT_READ( kv_err, p_config, remoteServerPort );
     }
@@ -79,9 +77,8 @@ static void app_contex_save(void)
 
     CONTEXT_SAVE( kv_err, p_config, configDataVer );
     CONTEXT_SAVE( kv_err, p_config, localServerPort );
-    CONTEXT_SAVE( kv_err, p_config, localServerEnable );
     CONTEXT_SAVE( kv_err, p_config, USART_BaudRate );
-    CONTEXT_SAVE( kv_err, p_config, remoteServerEnable );
+    CONTEXT_SAVE( kv_err, p_config, tcp_client_enable );
     CONTEXT_SAVE( kv_err, p_config, remoteServerDomain );
     CONTEXT_SAVE( kv_err, p_config, remoteServerPort );
 
@@ -94,7 +91,7 @@ USED void config_server_delegate_report( json_object *app_menu, mxos_Context_t *
     merr_t err = kNoErr;
 
     // SPP protocol remote server connection enable
-    err = config_server_create_bool_cell( app_menu, "Connect SPP Server", app_config.remoteServerEnable, "RW" );
+    err = config_server_create_bool_cell( app_menu, "Connect SPP Server", app_config.tcp_client_enable, "RW" );
     require_noerr( err, exit );
 
     //Server address cell
@@ -127,7 +124,7 @@ USED void config_server_delegate_recv( const char *key, json_object *value, bool
 {
     if ( !strcmp( key, "Connect SPP Server" ) )
     {
-        app_config.remoteServerEnable = json_object_get_boolean( value );
+        app_config.tcp_client_enable = json_object_get_boolean( value );
         *need_reboot = true;
     } else if ( !strcmp( key, "SPP Server" ) )
     {

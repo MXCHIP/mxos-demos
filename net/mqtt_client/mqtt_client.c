@@ -139,7 +139,7 @@ merr_t application_start( void *arg )
              0xFF & (mqtt_lib_version >> 16), 0xFF & (mqtt_lib_version >> 8), 0xFF & mqtt_lib_version);
 
     /* Create mico system context and read application's config data from flash */
-    mxos_context = mxos_system_context_init( 0 );
+    mxos_context = system_context_init( 0 );
 
     /* mico system initialize */
     err = mxos_system_init( mxos_context );
