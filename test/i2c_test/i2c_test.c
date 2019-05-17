@@ -3,8 +3,8 @@
  * @file    i2c_test.c
  * @author  guidx
  * @version V1.0.0
- * @date    2-Feb-2019
- * @brief   First MXOS application to test i2c interface!
+ * @date    17-May-2019
+ * @brief   MXOS application to use i2c interface!
  ******************************************************************************
  *
  *  The MIT License
@@ -52,7 +52,7 @@ int main(void)
 	/* i2c init */
 	err = mxos_i2c_init(&mxos_i2c_test);
 
-	err = mxos_i2c_build_comb_msg(i2c_message, send_buf, recv_buf, 1, 1, 1);
+	err = mxos_i2c_build_comb_msg(i2c_message, send_buf, recv_buf, 1, 1, 500);
 
 	while (1)
 	{

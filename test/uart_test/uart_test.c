@@ -1,10 +1,10 @@
 /**
  ******************************************************************************
- * @file    hello_world.c
- * @author  Snow Yang
+ * @file    uart_test.c
+ * @author  guidx
  * @version V1.0.0
- * @date    2-Feb-2019
- * @brief   First MXOS application to say hello world!
+ * @date    17-May-2019
+ * @brief   MXOS application to use uart interface!
  ******************************************************************************
  *
  *  The MIT License
@@ -31,9 +31,9 @@
  */
 #include "mxos.h"
 
-#define UART_BUF_LENGTH (2048)
-#define UART_RECV_LENGTH (1024)
-#define UART_RECV_TIMEOUT (1000)
+#define UART_BUF_LENGTH 	(2048)
+#define UART_RECV_LENGTH 	(1024)
+#define UART_RECV_TIMEOUT 	(1000)
 
 volatile ring_buffer_t rx_buffer;
 volatile uint8_t rx_data[UART_BUF_LENGTH];
@@ -52,7 +52,6 @@ uint32_t _uart_get_one_packet(uint8_t *inBuf, int inBufLen)
 	{
 		if (mhal_uart_read(MXOS_UART_2, inBuf, inBufLen, UART_RECV_TIMEOUT) == kNoErr)
 		{
-			printf("return\r\n");
 			return inBufLen;
 		}
 		else
@@ -88,27 +87,11 @@ int main(void)
 {
 	merr_t err = kNoErr;
 
-	err = uart_init(9600);
-
-	uint32_t recv_length = 0;
-
-
-
-	/* Toggle mxos system led available on most mxosKits */
+	err = uart_init(115200);
+	
 	while (1)
 	{
 		recv_len = _uart_get_one_packet(recv_buf, UART_RECV_LENGTH);
-
-		printf("recv data length is :%d\r\n",recv_len);
-
-		printf("device->mcu:");
-		for(int i = 0;i < recv_len;i++)
-		{
-			printf("%02X ",recv_buf[i]);
-		}
-		printf("\r\n");
-
-		recv_length += recv_len;
 
 		if (recv_len <= 0)
 		{
@@ -116,16 +99,8 @@ int main(void)
 		}
 		else
 		{
-			err  = mhal_uart_write(MXOS_UART_2, recv_buf, recv_len);
-
-			printf("mcu->device:");
-			for(int i = 0;i < recv_len;i++)
-			{
-				printf("%02X ",recv_buf[i]);
-			}
-			printf("\r\n");
+			err = mhal_uart_write(MXOS_UART_2, recv_buf, recv_len);
 		}
-		printf("uart test recv data length is :%d\r\n",recv_length);
 	}
 
 exit:

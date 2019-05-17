@@ -1,10 +1,10 @@
 /**
  ******************************************************************************
- * @file    hello_world.c
- * @author  Snow Yang
+ * @file    spi_test.c
+ * @author  guidx
  * @version V1.0.0
- * @date    2-Feb-2019
- * @brief   First MXOS application to say hello world!
+ * @date    17-May-2019
+ * @brief   MXOS application to test spi interface!
  ******************************************************************************
  *
  *  The MIT License

@@ -1,30 +1,30 @@
 /**
-  @page " spi_test"  demo
+  @page " adc_test"  demo
   
   @verbatim
-  ******************** (C) COPYRIGHT 2016 MXCHIP MiCO SDK*******************
-  * @file    spi_test/readme.txt 
-  * @author  MDWG (MiCO Documentation Working Group)
+  ******************** (C) COPYRIGHT 2019 MXCHIP MiCO SDK*******************
+  * @file    adc_test/readme.txt 
+  * @author  MDWG (MXOS Documentation Working Group)
   * @version v2.4.x 
-  * @date    11-April-2016
-  * @brief   Description of the  "hello world"  demo.
+  * @date    17-May-2019
+  * @brief   Description of the  "adc test"  demo.
   ******************************************************************************
 
   @par Demo Description 
 This demo shows:  
-    - how to run MiCO system based on a hello world applicaiton program. 
+    - how to use adc interface based on a adc test applicaiton program. 
       Include the following specifical function:
-       - how to Print logs through MiCO UART2(system debug serial port of MiCO);
-       - how to flip a LED(connected to MiCO GPIO) ON or OFF  status by calling MiCO API;
-       - how to Hang up the current thread for a while by calling MiCO API.
+       - how to Print logs through MXOS UART2(system debug serial port of MiCO);
+       - how to flip a LED(connected to MXOS GPIO) ON or OFF  status by calling MXOS API;
+       - how to Hang up the current thread for a while by calling MXOS API.
 
-    - MiCO UART2 is mapping to UARTx of MCU, which can refer to platform.c and paltform.h.
+    - MXOS UART2 is mapping to UARTx of MCU, which can refer to platform.c and paltform.h.
     - mxos_SYS_LED is mapping to a GPIO, which can refer to platform.c and paltform.h.
  
 
 @par Directory contents 
-    - Demos/helloworld/hello_world.c   Applicaiton program
-    - Demos/helloworld/mxos_config.h   MiCO function header file
+    - Demos/test/adc_test/adc_test.c      Applicaiton program
+    - Demos/test/adc_test/mxos_config.h   MXOS function header file
 
 
 @par Hardware and Software environment  

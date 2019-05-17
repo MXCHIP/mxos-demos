@@ -3,8 +3,8 @@
  * @file    adc_test.c
  * @author  guidx
  * @version V1.0.0
- * @date    2-Feb-2019
- * @brief   First MXOS application to test adc!
+ * @date    17-May-2019
+ * @brief   MXOS application to use adc interface!
  ******************************************************************************
  *
  *  The MIT License

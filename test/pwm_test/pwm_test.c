@@ -1,10 +1,10 @@
 /**
  ******************************************************************************
- * @file    hello_world.c
- * @author  Snow Yang
+ * @file    pwm_test.c
+ * @author  guidx
  * @version V1.0.0
- * @date    2-Feb-2019
- * @brief   First MXOS application to say hello world!
+ * @date    17-May-2019
+ * @brief   MXOS application to test pwm interface!
  ******************************************************************************
  *
  *  The MIT License
@@ -37,16 +37,15 @@
 
 int main(void)
 {
+	merr_t err = kNoErr;
 
-	printf("start pwm init!\r\n");
 	/* mxos pwm init*/
-	mxos_pwm_init(MXOS_PWM_6, PWM_K_HZ, 80);
+	err = mxos_pwm_init(MXOS_PWM_1, PWM_K_HZ, 50);
 
-	mxos_pwm_start(MXOS_PWM_6);
+	err = mxos_pwm_start(MXOS_PWM_1);
 
-	mxos_pwm_stop(MXOS_PWM_6);
+	err = mxos_pwm_stop(MXOS_PWM_1);
 
-	/* Toggle mxos system led available on most mxosKits */
 	while (1)
 	{
 		mos_sleep(1.0);
