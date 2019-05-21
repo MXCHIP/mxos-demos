@@ -1,14 +1,14 @@
 /**
  ******************************************************************************
- * @file    ext_dc_motor.c
- * @author  William Xu
+ * @file    rand_demo.c
+ * @author  Yang Haibo
  * @version V1.0.0
- * @date    21-May-2015
- * @brief   DC motor control demo.
+ * @date    14-May-2019
+ * @brief   
  ******************************************************************************
  *
  *  The MIT License
- *  Copyright (c) 2016 MXCHIP Inc.
+ *  Copyright (c) 2014 MXCHIP Inc.
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,34 +26,26 @@
  *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  *  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
  *  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
  ******************************************************************************
- **/
+ */
 
-#include "mico.h"
-#include "MiCOKit_EXT/micokit_ext.h"
+#include "mxos.h"
 
-#define ext_dc_motor_log(M, ...) custom_log("EXT", M, ##__VA_ARGS__)
 
-int application_start( void )
+
+int main( void )
 {
-  merr_t err = kNoErr;
-  
-  /*init DC Motor*/ 
-  err = dc_motor_init();
-  require_noerr_string( err, exit, "ERROR: Unable to Init DC motor" );
-  
-  while(1)
-  {    
-    ext_dc_motor_log("start");
-    dc_motor_set(1);
-    mos_msleep(1500);
-    dc_motor_set(0);
-    mos_msleep(4500);
-  }
-exit:
-  return err; 
+    uint8_t buf[256];
+    int i;
+    
+    platform_random_number_read(buf, sizeof(buf));
+    printf("rand: \r\n");
+    for(i=0;i<sizeof(buf); i++) {
+        printf("%02x ", buf[i]);
+        if (i % 16 == 15)
+            printf("\r\n");
+    }
+    printf("\r\n");
+    return kNoErr;
 }
-
-
 

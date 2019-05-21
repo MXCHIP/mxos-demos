@@ -3,11 +3,11 @@
 
 #define smtp_log(M, ...) custom_log("SMTP", M, ##__VA_ARGS__)
 
-#define SMTP_SERVER_ADDR "smtp.mxhichina.com"
+#define SMTP_SERVER_ADDR "smtp.domainname.com"
 #define SMTP_SERVER_PORT 465
-#define SMTP_SENDER_ADDR "yanghb@mxchip.com"
+#define SMTP_SENDER_ADDR "user_name@domainname.com"
 //#define SMTP_SENDER_PASS "bunengshuodemimi"
-#define SMTP_SENDER_PASS "YHB!cisco1"
+#define SMTP_SENDER_PASS "smtppass"
 
 static mxos_semaphore_t wait_sem = NULL;
 

@@ -75,7 +75,7 @@ void tcp_server_thread(void* arg)
     if(FD_ISSET(localTcpListener_fd, &readfds)){
       sockaddr_t_size = sizeof(struct sockaddr_in);
       j = accept(localTcpListener_fd, (struct sockaddr *)&addr, (socklen_t *)&sockaddr_t_size);
-	  if (IsValidFD(j)) {
+	  if (j >= 0) {
         strcpy( ip_address, inet_ntoa(addr.sin_addr) );
         server_log("Client %s:%d connected, fd: %d", ip_address, addr.sin_port, j);
         localTcpClient_thread_handler = mos_thread_new( MXOS_APPLICATION_PRIORITY, "Local Clients", localTcpClient_thread, STACK_SIZE_LOCAL_TCP_CLIENT_THREAD, &j );
@@ -110,7 +110,7 @@ void localTcpClient_thread(void* arg)
 
   err = socket_queue_create(context, &queue);
   require_noerr( err, exit );
-  eventFd = mxos_create_event_fd(queue);
+  eventFd = mos_event_fd_new(queue);
   if (eventFd < 0) {
     server_log("create event fd error");
     goto exit_with_queue;

@@ -11,7 +11,7 @@
 #ifndef __MXOS_CONFIG_H__
 #define __MXOS_CONFIG_H__
 
-#define APP_INFO   "SPP(wlan<>uart) Demo based on MICO OS"
+#define APP_INFO   "GPIO DEMO"
 
 #define FIRMWARE_REVISION   "MXOS_SPP_1_0"
 #define MANUFACTURER        "MXCHIP Inc."
@@ -46,8 +46,5 @@
 /************************************************************************
  * IPV6 */
 //#define MXOS_CONFIG_IPV6                          1
-#define CONFIG_MDNS_DEBUG            MXOS_DEBUG_ON
-#define MXOS_WLAN_FORCE_OTA_ENABLE               0
-#define CONFIG_FORCTOTA_DEBUG        MXOS_DEBUG_ON
 
 #endif

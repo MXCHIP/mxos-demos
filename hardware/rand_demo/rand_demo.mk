@@ -22,9 +22,8 @@
 ############################################################################### 
 
 
-NAME := App_wifi_station
+NAME := App_rand
 
-$(NAME)_SOURCES := wifi_station_core_api.c
-#$(NAME)_SOURCES := wifi_station_system_api.c
+$(NAME)_SOURCES := rand_demo.c
 				      
 

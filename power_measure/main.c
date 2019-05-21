@@ -279,10 +279,10 @@ int application_start( void )
 
     while(1) {
         send( udp_fd, buf, 1024, 0 );
-        mxos_thread_msleep( 10 );
+        mos_msleep( 10 );
     }
 
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
     return 0;
 }
 #endif
