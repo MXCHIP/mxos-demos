@@ -27,7 +27,7 @@
 
 /* Verify if Bluetooth function returns success.
  * Otherwise, returns the error code immediately.
- * Assert in DEBUG build.
+ * Assert in _MXOS_DEBUG_ build.
  */
 
 /******************************************************

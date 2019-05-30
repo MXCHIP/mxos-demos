@@ -21,7 +21,7 @@
  ******************************************************/
 /* Verify if bt_bus function returns success.
  * Otherwise, returns the error code immediately.
- * Assert in DEBUG build.
+ * Assert in _MXOS_DEBUG_ build.
  */
 #define VERIFY_RETVAL( function_call ) \
 do \
@@ -32,7 +32,7 @@ do \
 
 /* Verify if HCI response is expected.
  * Otherwise, returns HCI unexpected response immediately.
- * Assert in DEBUG build.
+ * Assert in _MXOS_DEBUG_ build.
  */
 #define VERIFY_RESPONSE( a, b, size ) \
 { \
