@@ -22,7 +22,7 @@
  ******************************************************/
 
 /* Driver thread priority is set to 1 higher than BT transport thread */
-#define BT_UART_THREAD_PRIORITY mxos_NETWORK_WORKER_PRIORITY - 2
+#define BT_UART_THREAD_PRIORITY MOS_NETWORK_WORKER_PRIORITY - 2
 #define BT_UART_THREAD_NAME     "BT UART"
 #define BT_UART_STACK_SIZE      600
 #define BT_UART_PACKET_TYPE     0x0A

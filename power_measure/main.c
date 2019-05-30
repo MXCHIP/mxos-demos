@@ -84,7 +84,7 @@ int application_start( void )
 #endif
 
     power_log( "Enter standby mode after 5 seconds" );
-    mxos_thread_sleep( 5 );  //Wait a period to avoid enter standby mode when boot
+    mos_sleep_ms( 5 );  //Wait a period to avoid enter standby mode when boot
     power_log( "Enter standby mode..., and wakeup in 5 seconds" );
     MicoSystemStandBy( 5 );
 
@@ -279,7 +279,7 @@ int application_start( void )
 
     while(1) {
         send( udp_fd, buf, 1024, 0 );
-        mxos_thread_msleep( 10 );
+        mos_sleep_ms( 10 );
     }
 
     mxos_rtos_delete_thread( NULL );

@@ -108,7 +108,7 @@ int application_start( void )
     light_sensor_read(&light_adc);
     app_log("Light ADC: %d",light_adc);    
 
-    mxos_thread_sleep(1); 
+    mos_sleep_ms(1); 
   }
   
 exit:

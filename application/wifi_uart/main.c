@@ -86,19 +86,19 @@ int main( void )
     require_noerr( err, exit );
 
     /* Create UART receive thread*/
-    thread = mos_thread_new( MXOS_APPLICATION_PRIORITY, "UART Recv", uart_recv_thread, 
+    thread = mos_thread_new( MOS_APPLICATION_PRIORITY, "UART Recv", uart_recv_thread, 
                              STACK_SIZE_UART_RECV_THREAD, &app_context );
     require_string( thread, exit, "ERROR: Unable to start the uart recv thread." );
 
     /* Local TCP server thread */
-    thread = mos_thread_new( MXOS_APPLICATION_PRIORITY, "TCP Server", tcp_server_thread,
+    thread = mos_thread_new( MOS_APPLICATION_PRIORITY, "TCP Server", tcp_server_thread,
                              STACK_SIZE_TCP_SERVER_THREAD, &app_context );
     require_string( thread, exit, "ERROR: Unable to start the tcp server thread." );
 
     /* Remote TCP client thread, maybe disabled by configuration */
     if ( app_context.appConfig->tcp_client_enable == true )
     {
-        thread = mos_thread_new( MXOS_APPLICATION_PRIORITY, "TCP Client", tcp_client_thread,
+        thread = mos_thread_new( MOS_APPLICATION_PRIORITY, "TCP Client", tcp_client_thread,
                                  STACK_SIZE_TCP_CLIENT_THREAD, &app_context );
         require_string( thread, exit, "ERROR: Unable to start the tcp client thread." );
     }

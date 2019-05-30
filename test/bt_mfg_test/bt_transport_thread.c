@@ -136,18 +136,18 @@ merr_t bt_transport_thread_send_packet( bt_packet_t* packet )
     }
     else
     {
-        return mxos_rtos_send_asynchronous_event( &bt_transport_thread, bt_transport_thread_send_packet_handler, (void*)packet );
+        return mos_worker_send_async_event( &bt_transport_thread, bt_transport_thread_send_packet_handler, (void*)packet );
     }
 }
 
 merr_t bt_transport_thread_notify_packet_received( void )
 {
-    return mxos_rtos_send_asynchronous_event( &bt_transport_thread, bt_transport_thread_receive_packet_handler, NULL );
+    return mos_worker_send_async_event( &bt_transport_thread, bt_transport_thread_receive_packet_handler, NULL );
 }
 
 merr_t bt_transport_thread_execute_callback( bt_transport_thread_callback_handler_t callback_handler, void* arg )
 {
-    return mxos_rtos_send_asynchronous_event( &bt_transport_thread, callback_handler, arg );
+    return mos_worker_send_async_event( &bt_transport_thread, callback_handler, arg );
 }
 
 merr_t bt_transport_thread_enable_packet_dump( void )

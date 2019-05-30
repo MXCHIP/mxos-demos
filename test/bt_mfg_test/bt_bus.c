@@ -16,7 +16,9 @@
 #include "platform_config.h"
 #include "mxos_bt_constants.h"
 #include "mico.h"
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "platform_bluetooth.h"
 #include "RingBufferUtils.h"
 

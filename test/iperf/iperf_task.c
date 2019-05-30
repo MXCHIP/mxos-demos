@@ -765,7 +765,7 @@ void iperf_tcp_run_client( char *parameters[] )
 #if defined(mxos_IPERF_DEBUG_ENABLE)
         DBGPRINT_IPERF(IPERF_DEBUG_SEND, ("\r\n[%s:%d] nbytes=%d \r\n", __FUNCTION__, __LINE__, nbytes));
 #endif
-        mxos_thread_msleep( pkt_delay );
+        mos_sleep_ms( pkt_delay );
 
         if ( num_tag == 1 )
              {
@@ -997,7 +997,7 @@ void iperf_udp_run_client( char *parameters[] )
         }
 
         if ( (int) current_sleep > 0 ) {
-            mxos_thread_msleep( current_sleep );
+            mos_sleep_ms( current_sleep );
         } else {
             current_sleep = 0;
         }

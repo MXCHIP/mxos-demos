@@ -172,7 +172,7 @@ void tcp_client_thread(void* arg)
         if(remoteTcpClient_fd != -1){
           SocketClose(&remoteTcpClient_fd);
         }
-        mos_thread_delay(CLOUD_RETRY*1000);
+        mos_sleep_ms(CLOUD_RETRY*1000);
     }
   }
     

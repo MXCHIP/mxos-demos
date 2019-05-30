@@ -11,7 +11,9 @@
 
 #pragma once
 
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "bt_packet_internal.h"
 
 #ifdef __cplusplus
@@ -30,7 +32,7 @@ extern "C" {
  * context. Bluetooth transport thread priority is to 1 higher than that of
  * WICED_NETWORK_WORKER_PRIORITY to let it preempt WICED_NETWORK_WORKER_PRIORITY.
  */
-#define BT_TRANSPORT_THREAD_PRIORITY mxos_NETWORK_WORKER_PRIORITY - 1
+#define BT_TRANSPORT_THREAD_PRIORITY MOS_NETWORK_WORKER_PRIORITY - 1
 
 /* ~4K of stack space is for printf and stack check.
  */

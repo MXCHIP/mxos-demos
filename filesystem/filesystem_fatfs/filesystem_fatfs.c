@@ -157,7 +157,7 @@ int application_start( void )
     merr_t err;
     
     /* Test_fatfs thread. */
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "FileSystem", test_fatfs,
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "FileSystem", test_fatfs,
                                    0x2000,
                                    0 );
     require_noerr( err, exit );

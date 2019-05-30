@@ -178,7 +178,7 @@ void tls_server_thread( mxos_thread_arg_t arg )
                 strcpy( client_ip_str, inet_ntoa( client_addr.sin_addr ) );
                 tls_server_log( "TLS Client %s:%d connected, fd: %d",
                                 client_ip_str, client_addr.sin_port, client_fd );
-                if ( kNoErr != mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY,
+                if ( kNoErr != mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY,
                                                         "TLS Clients",
                                                         tls_client_thread,
                                                         0x2000,
@@ -219,7 +219,7 @@ int application_start( void )
     require_noerr( err, exit );
 
     /* Start TCP server listener thread*/
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY,
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY,
                                    "TLS_server",
                                    tls_server_thread,
                                    0x2000,

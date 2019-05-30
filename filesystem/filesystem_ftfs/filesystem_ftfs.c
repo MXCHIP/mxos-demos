@@ -130,7 +130,7 @@ int application_start( void )
     merr_t err;
     
     /* Test_ftfs thread. */
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "FileSystem", test_ftfs,
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "FileSystem", test_ftfs,
                                    0x2000,
                                    0 );
     require_noerr( err, exit );

@@ -49,7 +49,7 @@ int application_start( void )
     err = light_sensor_read(&light_sensor_data);
     require_noerr_action( err, exit, ext_light_sensor_log("ERROR: Can't light sensor read data") );
     ext_light_sensor_log("light date: %d", light_sensor_data);
-    mxos_thread_sleep(1);
+    mos_sleep_ms(1);
   }
 exit:
   return err; 

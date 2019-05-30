@@ -10,7 +10,9 @@
 
 
 #include "mico.h"
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "bt_bus.h"
 #include "bt_hci.h"
 #include "bt_hci_interface.h"

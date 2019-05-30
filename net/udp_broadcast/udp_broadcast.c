@@ -70,7 +70,7 @@ void udp_broadcast_thread( mxos_thread_arg_t arg )
         /*the receiver should bind at port=20000*/
         sendto( udp_fd, data, strlen( data ), 0, (struct sockaddr *) &addr, sizeof(addr) );
 
-        mxos_thread_sleep( 2 );
+        mos_sleep_ms( 2 );
     }
 
     exit:
@@ -87,7 +87,7 @@ int application_start( void )
     err = mxos_system_init( system_context_init( 0 ) );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "udp_broadcast", udp_broadcast_thread, 0x800, 0 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "udp_broadcast", udp_broadcast_thread, 0x800, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the UDP thread." );
 
     exit:

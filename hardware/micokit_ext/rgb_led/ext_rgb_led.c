@@ -50,13 +50,13 @@ int application_start( void )
   {
     /*open red led,#FF0000*/
     rgb_led_open(255, 0, 0);
-    mxos_thread_sleep(1);
+    mos_sleep_ms(1);
     /*open green led #00FF00*/
     rgb_led_open(0, 255, 0);
-    mxos_thread_sleep(1); 
+    mos_sleep_ms(1); 
     /*open blue led,#0000FF*/
     rgb_led_open(0, 0, 255);
-    mxos_thread_sleep(1);
+    mos_sleep_ms(1);
   }
 }
 #else
@@ -69,13 +69,13 @@ int application_start( void )
   {
     /*open red led*/
     hsb2rgb_led_open(0, 100, 100);
-    mxos_thread_sleep(1);
+    mos_sleep_ms(1);
     /*open green led*/
     hsb2rgb_led_open(120, 100, 100);
-    mxos_thread_sleep(1);
+    mos_sleep_ms(1);
     /*open blue led*/
     hsb2rgb_led_open(240, 100, 100);
-    mxos_thread_sleep(1);
+    mos_sleep_ms(1);
   }
 }
 #endif

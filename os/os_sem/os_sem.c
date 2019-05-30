@@ -44,7 +44,7 @@ void release_thread( mxos_thread_arg_t arg )
     {
         os_sem_log( "release semaphore" );
         mxos_rtos_set_semaphore( &os_sem );
-        mxos_thread_sleep( 3 );
+        mos_sleep_ms( 3 );
     }
 
     mxos_rtos_delete_thread( NULL );
@@ -59,10 +59,10 @@ int application_start( void )
     err = mxos_rtos_init_semaphore( &os_sem, 1 ); //0/1 binary semaphore || 0/N semaphore
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "release sem", release_thread, 0x500, 0 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "release sem", release_thread, 0x500, 0 );
     require_noerr( err, exit );
 
-    semphr_fd = mxos_create_event_fd( os_sem );
+    semphr_fd = mos_event_fd_new( os_sem );
     fd_set readfds;
     while ( 1 )
     {

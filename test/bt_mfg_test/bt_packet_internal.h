@@ -11,7 +11,9 @@
 
 #pragma once
 
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "mxos_bt_constants.h"
 #include "LinkListUtils.h"
 

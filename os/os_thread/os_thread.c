@@ -40,7 +40,7 @@ void thread_1( mxos_thread_arg_t arg )
     while ( 1 )
     {
         os_thread_log( "This is thread 1" );
-        mxos_thread_sleep( 2 );
+        mos_sleep_ms( 2 );
     }
 }
 
@@ -48,7 +48,7 @@ void thread_2( mxos_thread_arg_t arg )
 {
     UNUSED_PARAMETER( arg );
     os_thread_log( "This is thread 2" );
-    mxos_thread_sleep( 4 );
+    mos_sleep_ms( 4 );
     /* Make with terminate state and IDLE thread will clean resources */
     mxos_rtos_delete_thread( NULL );
 }
@@ -59,13 +59,13 @@ int application_start( void )
     mxos_thread_t t_handler = NULL;
 
     /* Create a new thread */
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "Thread 1", thread_1, 0x500, 0 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "Thread 1", thread_1, 0x500, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the thread 1." );
 
     while ( 1 )
     {
         /* Create a new thread, and this thread will delete its self and clean its resource */
-        err = mxos_rtos_create_thread( &t_handler, mxos_APPLICATION_PRIORITY, "Thread 2", thread_2, 0x500, 0 );
+        err = mxos_rtos_create_thread( &t_handler, MOS_APPLICATION_PRIORITY, "Thread 2", thread_2, 0x500, 0 );
         require_noerr_string( err, exit, "ERROR: Unable to start the thread 2." );
         mxos_rtos_thread_join( &t_handler );
     }

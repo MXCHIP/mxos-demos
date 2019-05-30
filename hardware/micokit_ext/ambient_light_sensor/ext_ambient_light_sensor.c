@@ -46,7 +46,7 @@ int application_start( void )
   
   while(1)
   {
-     mxos_thread_sleep(1); 
+     mos_sleep_ms(1); 
      err = apds9930_data_readout(&apds9930_Prox, &apds9930_Lux);
      require_noerr_action( err, exit, ext_ambient_light_sensor_log("ERROR: Can't Read Data") );
      ext_ambient_light_sensor_log("APDS9930  Prox: %.1fmm  Lux: %d", 
