@@ -69,7 +69,7 @@ void tcp_client_thread(void* arg)
   int eventFd = -1;
   mos_queue_id_t queue;
   socket_msg_t *msg;
-  LinkStatusTypeDef wifi_link;
+  mwifi_link_info_t wifi_link;
   int sent_len, errno;
   struct hostent* hostent_content = NULL;
   char **pptr = NULL;
