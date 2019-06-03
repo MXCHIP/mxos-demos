@@ -31,15 +31,15 @@ HkStatus HKExcuteUnpairedIdentityRoutine( void )
 {
 #ifdef USE_MiCOKit_EXT
   hsb2rgb_led_open( app_context->lightbulb.hue, app_context->lightbulb.saturation, app_context->lightbulb.brightness );
-  mos_sleep_ms(200);
+  mos_msleep(200);
   hsb2rgb_led_close(  );
-  mos_sleep_ms(200);
+  mos_msleep(200);
   hsb2rgb_led_open( app_context->lightbulb.hue, app_context->lightbulb.saturation, app_context->lightbulb.brightness );
-  mos_sleep_ms(200);
+  mos_msleep(200);
   hsb2rgb_led_close(  );
-  mos_sleep_ms(200);
+  mos_msleep(200);
   hsb2rgb_led_open( app_context->lightbulb.hue, app_context->lightbulb.saturation, app_context->lightbulb.brightness );
-  mos_sleep_ms(200);
+  mos_msleep(200);
   hsb2rgb_led_close(  );
 #endif
   /* Device identity routine */

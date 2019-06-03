@@ -70,7 +70,7 @@ void udp_broadcast_thread( mxos_thread_arg_t arg )
         /*the receiver should bind at port=20000*/
         sendto( udp_fd, data, strlen( data ), 0, (struct sockaddr *) &addr, sizeof(addr) );
 
-        mos_sleep_ms( 2 );
+        mos_msleep( 2 );
     }
 
     exit:

@@ -500,7 +500,7 @@ USED int32_t gagent_delegate_cloud_ota_data_process(uint32_t offset, uint8_t *da
     mxos_ctx->bootTable.crc = ota_crc16;  // pass crc16 to bootloader to check update
     mxos_system_context_update( mxos_ctx );
     mxos_system_power_perform( mxos_ctx, eState_Software_Reset );
-    mos_sleep_ms( mxos_WAIT_FOREVER );
+    mos_msleep( mxos_WAIT_FOREVER );
     
     rc = GAGENT_TRUE;
   }

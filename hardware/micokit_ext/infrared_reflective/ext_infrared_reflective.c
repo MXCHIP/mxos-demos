@@ -49,7 +49,7 @@ int application_start( void )
     err = infrared_reflective_read(&infrared_reflective_data);
     require_noerr_action( err, exit, ext_infrared_refective_log("ERROR: Can't infrared refectiver read data") );
     ext_infrared_refective_log("infrared reflective date: %d", infrared_reflective_data);
-    mos_sleep_ms(1);
+    mos_msleep(1);
   }
 exit:
   return err; 

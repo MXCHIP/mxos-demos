@@ -253,7 +253,7 @@ MQTT_start:
         rc = NewNetwork( &n, MQTT_SERVER, MQTT_SERVER_PORT, ssl_settings );
         if( rc == MQTT_SUCCESS ) break;
         mqtt_log("ERROR: MQTT network connection err=%d, reconnect after 3s...", rc);
-        mos_sleep_ms( 3 );
+        mos_msleep( 3 );
     }
 
     mqtt_log("MQTT network connection success!");
@@ -336,7 +336,7 @@ MQTT_start:
 MQTT_reconnect:
     mqtt_log("Disconnect MQTT client, and reconnect after 5s, reason: mqtt_rc = %d, err = %d", rc, err );
     mqtt_client_release( &c, &n );
-    mos_sleep_ms( 5 );
+    mos_msleep( 5 );
     goto MQTT_start;
 
 exit:

@@ -66,7 +66,7 @@ int application_start( void )
   err = mxos_start_timer(&timer_handle);
   require_noerr(err, exit);
 
-  mos_sleep_ms( mxos_NEVER_TIMEOUT );
+  mos_msleep( mxos_NEVER_TIMEOUT );
 
 exit:
   if( err != kNoErr )

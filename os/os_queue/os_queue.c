@@ -77,7 +77,7 @@ void sender_thread( mxos_thread_arg_t arg )
         require_noerr( err, exit );
 
         os_queue_log( "send data to queue" );
-        mos_sleep_ms( 1 );
+        mos_msleep( 1 );
     }
 
     exit:

@@ -40,7 +40,7 @@ void thread_1( mxos_thread_arg_t arg )
     while ( 1 )
     {
         os_thread_log( "This is thread 1" );
-        mos_sleep_ms( 2 );
+        mos_msleep( 2 );
     }
 }
 
@@ -48,7 +48,7 @@ void thread_2( mxos_thread_arg_t arg )
 {
     UNUSED_PARAMETER( arg );
     os_thread_log( "This is thread 2" );
-    mos_sleep_ms( 4 );
+    mos_msleep( 4 );
     /* Make with terminate state and IDLE thread will clean resources */
     mxos_rtos_delete_thread( NULL );
 }

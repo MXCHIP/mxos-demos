@@ -44,7 +44,7 @@ void release_thread( mxos_thread_arg_t arg )
     {
         os_sem_log( "release semaphore" );
         mxos_rtos_set_semaphore( &os_sem );
-        mos_sleep_ms( 3 );
+        mos_msleep( 3 );
     }
 
     mxos_rtos_delete_thread( NULL );

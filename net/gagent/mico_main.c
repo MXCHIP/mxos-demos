@@ -165,7 +165,7 @@ int application_start( void )
   require_action((GAGENT_OK == rc), exit, 
                  app_log("ERROR: gagent_connection_start err=%d.", rc));
   
-  mos_sleep_ms(5);
+  mos_msleep(5);
   while(1){
     // upload data
     force_upload_data[1] = (app_context->appConfig->switch_1 << ATTR_VAL_BIT_SW1) |
@@ -174,7 +174,7 @@ int application_start( void )
     app_log("force upload: ----------> [%02X].", force_upload_data[1]);
     gagent_upload_mcu_data_to_all_apps(0, force_upload_data, sizeof(force_upload_data));
     
-    mos_sleep_ms(3);
+    mos_msleep(3);
     // test upload log
     snprintf((char*)test_upload_log, 100, "Cloud data upload.");
     rc = gagent_upload_log(GAGENT_LOG_TYPE_ALL, GAGENT_LOG_INFO, 
@@ -183,7 +183,7 @@ int application_start( void )
     if(GAGENT_OK != rc){
       app_log("ERROR: upload log err=%d.", rc);
     }
-    mos_sleep_ms(12);
+    mos_msleep(12);
   }
 
 exit:

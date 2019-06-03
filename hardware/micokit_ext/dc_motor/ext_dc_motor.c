@@ -47,9 +47,9 @@ int application_start( void )
   {    
     ext_dc_motor_log("start");
     dc_motor_set(1);
-    mos_sleep_ms(1500);
+    mos_msleep(1500);
     dc_motor_set(0);
-    mos_sleep_ms(4500);
+    mos_msleep(4500);
   }
 exit:
   return err; 
