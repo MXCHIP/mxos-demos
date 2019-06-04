@@ -30,68 +30,70 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
 #define os_sem_log(M, ...) custom_log("OS", M, ##__VA_ARGS__)
 
-static mxos_semaphore_t os_sem = NULL;
+static mos_semphr_id_t os_sem = NULL;
 
-void release_thread( mxos_thread_arg_t arg )
+void release_thread(void *arg)
 {
-    UNUSED_PARAMETER( arg );
+    UNUSED_PARAMETER(arg);
 
-    while ( 1 )
+    while (1)
     {
-        os_sem_log( "release semaphore" );
-        mxos_rtos_set_semaphore( &os_sem );
-        mos_msleep( 3 );
+        os_sem_log("release semaphore");
+        mos_semphr_release(os_sem);
+        mos_sleep(1);
     }
 
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete(NULL);
 }
 
-int application_start( void )
+int main(void)
 {
     merr_t err = kNoErr;
     int semphr_fd = -1;
-    os_sem_log( "test binary semaphore" );
+    mos_thread_id_t thread;
 
-    err = mxos_rtos_init_semaphore( &os_sem, 1 ); //0/1 binary semaphore || 0/N semaphore
-    require_noerr( err, exit );
+    os_sem_log("test binary semaphore");
 
-    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "release sem", release_thread, 0x500, 0 );
-    require_noerr( err, exit );
+    os_sem = mos_semphr_new(1); //0/1 binary semaphore || 0/N semaphore
+    require(os_sem != NULL, exit);
 
-    semphr_fd = mos_event_fd_new( os_sem );
+    thread = mos_thread_new(MOS_APPLICATION_PRIORITY, "release sem", release_thread, 0x500, NULL);
+    require(thread != NULL, exit);
+
+    semphr_fd = mos_event_fd_new(os_sem);
     fd_set readfds;
-    while ( 1 )
+    while (1)
     {
-        FD_ZERO( &readfds );
-        FD_SET( semphr_fd, &readfds );
-        select( 24, &readfds, NULL, NULL, NULL );
+        FD_ZERO(&readfds);
+        FD_SET(semphr_fd, &readfds);
+        os_sem_log("selecting ...");
+        select(24, &readfds, NULL, NULL, NULL);
+        os_sem_log("selected");
 
-        if ( FD_ISSET( semphr_fd, &readfds ) )
+        if (FD_ISSET(semphr_fd, &readfds))
         {
-            mxos_rtos_get_semaphore( &os_sem, mxos_WAIT_FOREVER ); //wait until get semaphore
-            os_sem_log( "get semaphore" );
+            mos_semphr_acquire(os_sem, MOS_WAIT_FOREVER); //wait until get semaphore
+            os_sem_log("get semaphore");
         }
     }
 
-    exit:
-    if ( err != kNoErr )
-        os_sem_log( "Thread exit with err: %d", err );
+exit:
+    if (err != kNoErr)
+        os_sem_log("Thread exit with err: %d", err);
 
-    if ( os_sem != NULL )
+    if (os_sem != NULL)
     {
-        mxos_rtos_deinit_semaphore( &os_sem );
+        mos_semphr_delete(os_sem);
     }
 
-    if( semphr_fd != -1 )
+    if (semphr_fd != -1)
     {
-        mxos_rtos_deinit_event_fd( semphr_fd );
+        mos_event_fd_delete(semphr_fd);
     }
 
-    mxos_rtos_delete_thread( NULL );
     return err;
 }
-

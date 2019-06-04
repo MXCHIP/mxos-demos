@@ -37,9 +37,7 @@
 int main(void)
 {
 	/* Start mxos system functions according to mxos_config.h*/
-	mxos_Context_t *context;
-	context = system_context_init();
-	mxos_system_init(context);
+	mxos_system_init();
 
 	/* Output on debug serial port */
 	app_log("Hello world!");
