@@ -31,10 +31,6 @@
 #include "main.h"
 #include "spp_protocol.h"
 
-/* Ringbuffer used by UART driver*/
-volatile ring_buffer_t rx_buffer;
-volatile uint8_t rx_data[UART_BUFFER_LENGTH];
-
 /* Application's context data, variables */
 app_context_t app_context;
 
@@ -42,20 +38,9 @@ app_context_t app_context;
 merr_t app_uart_init(uint32_t baudrate)
 {
     merr_t err = kNoErr;
-    mxos_uart_config_t uart_config;
-
-    uart_config.baud_rate       = baudrate;
-    uart_config.data_width      = DATA_WIDTH_8BIT;
-    uart_config.parity          = NO_PARITY;
-    uart_config.stop_bits       = STOP_BITS_1;
-    uart_config.flow_control    = FLOW_CONTROL_DISABLED;
-
-    /* Create ringbuffer for UART driver */
-    err = ring_buffer_init( (ring_buffer_t *) &rx_buffer, (uint8_t *) rx_data, UART_BUFFER_LENGTH );
-    require_noerr( err, exit );
 
     /* Initialize uart driver */
-    err = mhal_uart_open( MXOS_UART_FOR_APP, &uart_config, (ring_buffer_t *) &rx_buffer );
+    err = mhal_uart_open( MXOS_UART_FOR_APP, baudrate, NULL );
     require_noerr( err, exit );
 
 exit:

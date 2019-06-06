@@ -62,8 +62,8 @@ extern "C" {
 
 /* Define thread stack size */
 #define STACK_SIZE_UART_RECV_THREAD           0x2A0
-#define STACK_SIZE_TCP_SERVER_THREAD    0x300
-#define STACK_SIZE_LOCAL_TCP_CLIENT_THREAD    0x350
+#define STACK_SIZE_TCP_SERVER_THREAD    0x500
+#define STACK_SIZE_LOCAL_TCP_CLIENT_THREAD    0x500
 #define STACK_SIZE_TCP_CLIENT_THREAD   0x500
 
 typedef struct _socket_msg {
