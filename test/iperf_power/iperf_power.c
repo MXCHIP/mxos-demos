@@ -136,7 +136,7 @@ static void conn_command(char *pcWriteBuffer, int xWriteBufferLen,int argc, char
 }
 static void timer_command(char *pcWriteBuffer, int xWriteBufferLen,int argc, char **argv)
 {
-	mxos_rtc_time_t t;
+	mhal_rtc_time_t t;
 
 	MicoRtcGetTime(&t);
 		cmd_printf("%d-%d-%d %d:%d:%d\r\n",
@@ -590,7 +590,7 @@ int application_start( void )
   merr_t err = kNoErr;
   int i = 0;
   int val;
-  mxos_rtc_time_t t;
+  mhal_rtc_time_t t;
   mxos_system_config_t cfg;
   float test = 1.02;
   
@@ -621,7 +621,7 @@ int application_start( void )
   //mxos_rtos_create_thread(NULL, 4, "", printf_thread, 0x200, NULL);
   while(1) {
   	msleep(200);
-	MicoGpioOutputTrigger((mxos_gpio_t)mxos_SYS_LED);
+	MicoGpioOutputTrigger((mhal_gpio_t)mxos_SYS_LED);
 	//MicoRtcGetTime(&t);
 	//printf("%02d��%02d��%02d�� %02d:%02d:%02d\r\n",
 	//		t.year, t.month, t.date, t.hr, t.min, t.sec);
