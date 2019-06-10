@@ -6027,7 +6027,7 @@
       <name>$PROJ_DIR$\..\..\..\..\include\mxos_platform.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\include\mxos_rtos.h</name>
+      <name>$PROJ_DIR$\..\..\..\..\include\mos.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\..\..\..\include\mxos_security.h</name>

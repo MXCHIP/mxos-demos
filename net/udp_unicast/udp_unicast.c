@@ -119,7 +119,7 @@ int application_start( void )
     err = mxos_system_init( system_context_init( 0 ) );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "udp_unicast",
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "udp_unicast",
                                    (mxos_thread_function_t)udp_unicast_thread, 0x800, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the UDP thread." );
 

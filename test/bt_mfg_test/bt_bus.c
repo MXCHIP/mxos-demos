@@ -16,7 +16,9 @@
 #include "platform_config.h"
 #include "mxos_bt_constants.h"
 #include "mico.h"
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "platform_bluetooth.h"
 #include "RingBufferUtils.h"
 
@@ -26,7 +28,7 @@
 
 /* Verify if WICED Platform API returns success.
  * Otherwise, returns the error code immediately.
- * Assert in DEBUG build.
+ * Assert in _MXOS_DEBUG_ build.
  */
 #define RETURN_IF_FAILURE( x ) \
     do \

@@ -34,6 +34,26 @@
 
 #define CLOUD_RETRY  1
 
+static bool _wifiConnected = false;
+static mos_semphr_id_t  _wifiConnected_sem = NULL;
+
+void clientNotify_WifiStatusHandler(int event, void* arg )
+{
+  (void)arg;
+  switch (event) {
+  case NOTIFY_STATION_UP:
+    _wifiConnected = true;
+    mos_semphr_release(_wifiConnected_sem);
+    break;
+  case NOTIFY_STATION_DOWN:
+    _wifiConnected = false;
+    break;
+  default:
+    break;
+  }
+  return;
+}
+
 void tcp_client_thread(void* arg)
 {
   merr_t err = kUnknownErr;
@@ -49,18 +69,34 @@ void tcp_client_thread(void* arg)
   int eventFd = -1;
   mos_queue_id_t queue;
   socket_msg_t *msg;
+  mwifi_link_info_t wifi_link;
   int sent_len, errno;
   struct hostent* hostent_content = NULL;
   char **pptr = NULL;
   struct in_addr in_addr;
-
+  
+  _wifiConnected_sem = mos_semphr_new(1);
+  
+  /* Regisist notifications */
+  err = mxos_system_notify_register( mxos_notify_WIFI_STATUS_CHANGED, (void *)clientNotify_WifiStatusHandler, NULL );
+  require_noerr( err, exit ); 
   
   inDataBuffer = malloc(wlanBufferLen);
   require_action(inDataBuffer, exit, err = kNoMemoryErr);
   
+  err = mwifi_get_link_info(&wifi_link);
+  require_noerr( err, exit );
+  
+  if( wifi_link.is_connected == true )
+    _wifiConnected = true;
+  
   while(1) {
     if(remoteTcpClient_fd == -1 ) {
-
+      if(_wifiConnected == false){
+        err = mos_semphr_acquire(_wifiConnected_sem, 200000);
+        require_noerr_quiet(err, Continue);
+      }
+      
       hostent_content = gethostbyname( (char *)context->appConfig->remoteServerDomain );
       require_action_quiet( hostent_content != NULL, exit, err = kNotFoundErr);
       pptr=hostent_content->h_addr_list;

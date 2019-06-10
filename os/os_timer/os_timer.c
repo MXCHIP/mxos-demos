@@ -34,7 +34,7 @@
 
 #define os_timer_log(M, ...) custom_log("OS", M, ##__VA_ARGS__)
 
-mxos_timer_t timer_handle;
+mos_timer_id_t timer_handle;
 
 void destroy_timer( void );
 void alarm( void* arg );
@@ -42,7 +42,7 @@ void alarm( void* arg );
 void destroy_timer( void )
 {
   mxos_stop_timer( &timer_handle );
-  mxos_deinit_timer( &timer_handle );
+  mos_timer_delete(timer_handle );
 }
 
 void alarm( void* arg )
@@ -66,7 +66,7 @@ int application_start( void )
   err = mxos_start_timer(&timer_handle);
   require_noerr(err, exit);
 
-  mxos_thread_sleep( mxos_NEVER_TIMEOUT );
+  mos_msleep( mxos_NEVER_TIMEOUT );
 
 exit:
   if( err != kNoErr )

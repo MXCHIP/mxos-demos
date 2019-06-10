@@ -48,7 +48,7 @@ int application_start( void )
   
   while(1)
   {
-     mxos_thread_sleep(1); 
+     mos_msleep(1); 
      err = motion_sensor_readout(motion_data);
      require_noerr( err, exit );
      

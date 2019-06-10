@@ -46,7 +46,7 @@ int application_start( void )
   while(1)
   {
      /* DHT11 Read Data Delay must >= 1s*/
-     mxos_thread_sleep(1); 
+     mos_msleep(1); 
      err = DHT11_Read_Data(&dht11_temp_data, &dht11_hum_data);
      require_noerr_action( err, exit, ext_temp_hum_log("ERROR: Can't Read Data") );
      ext_temp_hum_log("DHT11  T: %3.1fC  H: %3.1f%%", (float)dht11_temp_data, (float)dht11_hum_data);   

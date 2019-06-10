@@ -42,15 +42,15 @@
 #define GREEN_LED_TRIGGER_INTERVAL_GOT_SSID_KEY           (4000)  // 4s 
 #define GREEN_LED_TRIGGER_INTERVAL_CLOUD_CONNECTED        (4000)  // 4s
 
-static mxos_timer_t _Led_green_timer = {NULL, NULL, NULL};
-static mxos_timer_t _Led_red_timer =  {NULL, NULL, NULL};
+static mos_timer_id_t _Led_green_timer = {NULL, NULL, NULL};
+static mos_timer_id_t _Led_red_timer =  {NULL, NULL, NULL};
 
 static void _led_green_Timeout_handler( void* arg )
 {
   (void)(arg);
   
   // green led bink
-   MicoGpioOutputTrigger((mxos_gpio_t)mxos_SYS_LED);
+   MicoGpioOutputTrigger((mhal_gpio_t)mxos_SYS_LED);
 }
 
 static void _led_red_Timeout_handler( void* arg )
@@ -58,7 +58,7 @@ static void _led_red_Timeout_handler( void* arg )
   (void)(arg);
   
   // red led bink
-   MicoGpioOutputTrigger((mxos_gpio_t)mxos_RF_LED);
+   MicoGpioOutputTrigger((mhal_gpio_t)mxos_RF_LED);
 }
 
 USED void mxos_system_delegate_config_will_start( void )
@@ -69,7 +69,7 @@ USED void mxos_system_delegate_config_will_start( void )
   // green led bink 2s(cycle=4s)
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   mxos_init_timer(&_Led_green_timer, GREEN_LED_TRIGGER_INTERVAL, _led_green_Timeout_handler, NULL);
@@ -93,7 +93,7 @@ USED void mxos_system_delegate_config_will_stop( void )
   // green led on
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   MicoSysLed(true);
@@ -112,7 +112,7 @@ USED void mxos_system_delegate_config_recv_ssid ( char *ssid, char *key )
   // green led bink 4s(cycle=8s)
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   mxos_init_timer(&_Led_green_timer, GREEN_LED_TRIGGER_INTERVAL_GOT_SSID_KEY, _led_green_Timeout_handler, NULL);
@@ -131,7 +131,7 @@ USED void mxos_system_delegate_config_success( mxos_config_source_t source )
   // green led on
   if(_Led_green_timer.handle){
   mxos_stop_timer(&_Led_green_timer);
-  mxos_deinit_timer( &_Led_green_timer );
+  mos_timer_delete(_Led_green_timer );
   _Led_green_timer.handle = NULL;
   }
   MicoSysLed(true); 
@@ -144,7 +144,7 @@ void app_set_led_station_up ( void )
   // red led on
   if(_Led_red_timer.handle){
     mxos_stop_timer(&_Led_red_timer);
-    mxos_deinit_timer( &_Led_red_timer );
+    mos_timer_delete(_Led_red_timer );
     _Led_red_timer.handle = NULL;
   }
   MicoRfLed(true); 
@@ -152,7 +152,7 @@ void app_set_led_station_up ( void )
   // green led on
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   MicoSysLed(true); 
@@ -165,7 +165,7 @@ void app_set_led_station_down ( void )
   // red led on
   if(_Led_red_timer.handle){
     mxos_stop_timer(&_Led_red_timer);
-    mxos_deinit_timer( &_Led_red_timer );
+    mos_timer_delete(_Led_red_timer );
     _Led_red_timer.handle = NULL;
   }
   MicoRfLed(true); 
@@ -173,7 +173,7 @@ void app_set_led_station_down ( void )
   // green led blink 4s
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   MicoSysLed(false); 
@@ -188,7 +188,7 @@ void app_set_led_status_connect_wifi(void)
   // red led on
   if(_Led_red_timer.handle){
     mxos_stop_timer(&_Led_red_timer);
-    mxos_deinit_timer( &_Led_red_timer );
+    mos_timer_delete(_Led_red_timer );
     _Led_red_timer.handle = NULL;
   }
   MicoRfLed(true); 
@@ -196,7 +196,7 @@ void app_set_led_status_connect_wifi(void)
   // green led blink 4s
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   MicoSysLed(false);
@@ -215,7 +215,7 @@ USED void gagent_delegate_cloud_connected ( void )
   // red led blink 4s
   if(_Led_red_timer.handle){
     mxos_stop_timer(&_Led_red_timer);
-    mxos_deinit_timer( &_Led_red_timer );
+    mos_timer_delete(_Led_red_timer );
     _Led_red_timer.handle = NULL;
   }
   MicoRfLed(false);
@@ -225,7 +225,7 @@ USED void gagent_delegate_cloud_connected ( void )
   // green led bink 4s
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   MicoSysLed(true);
@@ -244,7 +244,7 @@ USED void gagent_delegate_cloud_disconnected ( void )
   // red led on
   if(_Led_red_timer.handle){
     mxos_stop_timer(&_Led_red_timer);
-    mxos_deinit_timer( &_Led_red_timer );
+    mos_timer_delete(_Led_red_timer );
     _Led_red_timer.handle = NULL;
   }
   MicoRfLed(true);
@@ -252,7 +252,7 @@ USED void gagent_delegate_cloud_disconnected ( void )
   // green led
   if(_Led_green_timer.handle){
     mxos_stop_timer(&_Led_green_timer);
-    mxos_deinit_timer( &_Led_green_timer );
+    mos_timer_delete(_Led_green_timer );
     _Led_green_timer.handle = NULL;
   }
   
@@ -500,7 +500,7 @@ USED int32_t gagent_delegate_cloud_ota_data_process(uint32_t offset, uint8_t *da
     mxos_ctx->bootTable.crc = ota_crc16;  // pass crc16 to bootloader to check update
     mxos_system_context_update( mxos_ctx );
     mxos_system_power_perform( mxos_ctx, eState_Software_Reset );
-    mxos_thread_sleep( mxos_WAIT_FOREVER );
+    mos_msleep( mxos_WAIT_FOREVER );
     
     rc = GAGENT_TRUE;
   }

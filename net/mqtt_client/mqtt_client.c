@@ -116,7 +116,7 @@ Client c;  // mqtt client object
 Network n;  // socket network for mqtt client
 
 static mxos_worker_thread_t  mqtt_client_worker_thread; /* Worker thread to manage send/recv events */
-static mxos_timed_event_t   mqtt_client_send_event;
+static mos_worker_timed_event_t   mqtt_client_send_event;
 
 /******************************************************
  *               Function Definitions
@@ -151,16 +151,16 @@ merr_t application_start( void *arg )
     require_noerr_action( err, exit, app_log("ERROR: create mqtt msg send queue err=%d.", err) );
 
     /* start mqtt client */
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "mqtt_client",
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "mqtt_client",
                                    (mxos_thread_function_t)mqtt_client_thread, mqtt_thread_stack_size, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the mqtt client thread." );
 
     /* Create a worker thread for user handling MQTT data event  */
-    err = mxos_rtos_create_worker_thread( &mqtt_client_worker_thread, mxos_APPLICATION_PRIORITY, 0x800, 5 );
+    err = mxos_rtos_create_worker_thread( &mqtt_client_worker_thread, MOS_APPLICATION_PRIORITY, 0x800, 5 );
     require_noerr_string( err, exit, "ERROR: Unable to start the mqtt client worker thread." );
 
     /* Trigger a period send event */
-    mxos_rtos_register_timed_event( &mqtt_client_send_event, &mqtt_client_worker_thread, user_send_handler, 2000, NULL );
+    mos_worker_register_timed_event( &mqtt_client_send_event, &mqtt_client_worker_thread, user_send_handler, 2000, NULL );
     
 exit:
     if ( kNoErr != err )  app_log("ERROR, app thread exit err: %d", err);
@@ -234,7 +234,7 @@ void mqtt_client_thread( mxos_thread_arg_t arg )
     memset( &n, 0, sizeof(n) );
 
     /* create msg send queue event fd */
-    msg_send_event_fd = mxos_create_event_fd( mqtt_msg_send_queue );
+    msg_send_event_fd = mos_event_fd_new( mqtt_msg_send_queue );
     require_action( msg_send_event_fd >= 0, exit, mqtt_log("ERROR: create msg send queue event fd failed!!!") );
 
 MQTT_start:
@@ -253,7 +253,7 @@ MQTT_start:
         rc = NewNetwork( &n, MQTT_SERVER, MQTT_SERVER_PORT, ssl_settings );
         if( rc == MQTT_SUCCESS ) break;
         mqtt_log("ERROR: MQTT network connection err=%d, reconnect after 3s...", rc);
-        mxos_rtos_thread_sleep( 3 );
+        mos_msleep( 3 );
     }
 
     mqtt_log("MQTT network connection success!");
@@ -336,7 +336,7 @@ MQTT_start:
 MQTT_reconnect:
     mqtt_log("Disconnect MQTT client, and reconnect after 5s, reason: mqtt_rc = %d, err = %d", rc, err );
     mqtt_client_release( &c, &n );
-    mxos_rtos_thread_sleep( 5 );
+    mos_msleep( 5 );
     goto MQTT_start;
 
 exit:
@@ -369,7 +369,7 @@ static void messageArrived( MessageData* md )
     strncpy( p_recv_msg->topic, md->topicName->lenstring.data, md->topicName->lenstring.len );
     memcpy( p_recv_msg->data, message->payload, message->payloadlen );
 
-    err = mxos_rtos_send_asynchronous_event( &mqtt_client_worker_thread, user_recv_handler, p_recv_msg );
+    err = mos_worker_send_async_event( &mqtt_client_worker_thread, user_recv_handler, p_recv_msg );
     require_noerr( err, exit );
 
 exit:

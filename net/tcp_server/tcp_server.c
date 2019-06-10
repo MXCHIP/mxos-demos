@@ -137,7 +137,7 @@ void tcp_server_thread( mxos_thread_arg_t arg )
                 strcpy( client_ip_str, inet_ntoa( client_addr.sin_addr ) );
                 tcp_server_log( "TCP Client %s:%d connected, fd: %d", client_ip_str, client_addr.sin_port, client_fd );
                 if ( kNoErr
-                     != mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "TCP Clients",
+                     != mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "TCP Clients",
                                                  tcp_client_thread,
                                                  0x800, client_fd ) )
                     SocketClose( &client_fd );
@@ -165,7 +165,7 @@ int application_start( void )
     require_noerr( err, exit );
 
     /* Start TCP server listener thread*/
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "TCP_server", tcp_server_thread,
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "TCP_server", tcp_server_thread,
                                    0x800,
                                    0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the tcp server thread." );

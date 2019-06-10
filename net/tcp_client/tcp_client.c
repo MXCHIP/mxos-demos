@@ -135,7 +135,7 @@ int application_start( void )
     tcp_client_log( "wifi connected successful" );
 
     /* Start TCP client thread */
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "TCP_client", tcp_client_thread, 0x800, 0 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "TCP_client", tcp_client_thread, 0x800, 0 );
     require_noerr_string( err, exit, "ERROR: Unable to start the tcp client thread." );
 
     exit:

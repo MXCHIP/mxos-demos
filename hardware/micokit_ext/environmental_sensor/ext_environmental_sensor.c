@@ -49,7 +49,7 @@ int application_start( void )
   while(1)
   {
      /* BME280 Read Data Delay must >= 1s*/
-     mxos_thread_sleep(1); 
+     mos_msleep(1); 
      
      err = bme280_data_readout(&bme280_temp, &bme280_press, &bme280_hum);
      require_noerr_action( err, exit, ext_environmental_sensor_log("ERROR: Can't Read Data") );

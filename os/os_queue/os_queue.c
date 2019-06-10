@@ -77,7 +77,7 @@ void sender_thread( mxos_thread_arg_t arg )
         require_noerr( err, exit );
 
         os_queue_log( "send data to queue" );
-        mxos_thread_sleep( 1 );
+        mos_msleep( 1 );
     }
 
     exit:
@@ -94,10 +94,10 @@ int application_start( void )
     err = mxos_rtos_init_queue( &os_queue, "queue", sizeof(msg_t), 3 );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "receiver", receiver_thread, 0x500, 0 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "receiver", receiver_thread, 0x500, 0 );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY, "sender", sender_thread, 0x500, 0 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "sender", sender_thread, 0x500, 0 );
     require_noerr( err, exit );
 
     exit:

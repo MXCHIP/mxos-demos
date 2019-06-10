@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////
 // smtpclient.c for send mail by navy 2004.3.22
 
-//#define DEBUG
+//#define _MXOS_DEBUG_
 //#define SMTP_DEBUG5
 
 //#define SMTP_IO_DEBUG /* added by jinfeng */
@@ -42,7 +42,7 @@ typedef unsigned char byte;
 //
 /////////////////////////////////////////////////////////////////////
 
-#ifdef DEBUG
+#ifdef _MXOS_DEBUG_
 #define SMTP_DEBUG(a) a
 #else
 #define SMTP_DEBUG(a) /*a*/
@@ -432,7 +432,7 @@ static void SmtpPrintDebugInfo(SMTP *psmtp)
     if (psmtp == NULL)
         return;
 
-    printf("[SMTPCLIENT DEBUG %s] sockfd: %d, smtphost: %p, sender: %s, from: %s, to: %s,"
+    printf("[SMTPCLIENT _MXOS_DEBUG_ %s] sockfd: %d, smtphost: %p, sender: %s, from: %s, to: %s,"
            " smtpcmd: %s, smtprcv: %s, errcode: %d, errinfo: %s\n",
            formattime(time(NULL), temp, sizeof(temp)),
            psmtp->sockfd, psmtp->smtpserver,
@@ -513,7 +513,7 @@ static int SmtpRecv(SMTP *psmtp, const char *smtprcv, char *buf, const int len)
         return -2;
     }
 
-    SMTP_DEBUG(printf("[SMTPCLIENT DEBUG] SmtpRecv: %s\n", buf);)
+    SMTP_DEBUG(printf("[SMTPCLIENT _MXOS_DEBUG_] SmtpRecv: %s\n", buf);)
 
     SmtpParseMessage(psmtp, buf);
 
@@ -548,7 +548,7 @@ static int SmtpSendLine(SMTP *psmtp, const char *line)
 
     if (line != NULL && line[0] == '.')
     {
-        SMTP_DEBUG(printf("[SMTPCLIENT DEBUG] SmtpSend: %s\n", SMTP_DOT);)
+        SMTP_DEBUG(printf("[SMTPCLIENT _MXOS_DEBUG_] SmtpSend: %s\n", SMTP_DOT);)
 
         if ((errcode = writen(psmtp, SMTP_DOT, strlen(SMTP_DOT))) < 0)
         {
@@ -559,7 +559,7 @@ static int SmtpSendLine(SMTP *psmtp, const char *line)
 
     if (line != NULL && (len = strlen(line)) > 0)
     {
-        SMTP_DEBUG(printf("[SMTPCLIENT DEBUG] SmtpSend: %s\n", line);)
+        SMTP_DEBUG(printf("[SMTPCLIENT _MXOS_DEBUG_] SmtpSend: %s\n", line);)
 
         if ((errcode = writen(psmtp, line, len)) < 0)
         {
@@ -574,7 +574,7 @@ static int SmtpSendLine(SMTP *psmtp, const char *line)
     //if( line == NULL || len <= 0 || !( len >= 2 && line[len-1] == '\n' && line[len-2] == '\r' ) ) {
     if (line == NULL || len <= 0 || !(len >= 1 && line[len - 1] == '\n'))
     {
-        SMTP_DEBUG(printf("[SMTPCLIENT DEBUG] SmtpSend: \\r\\n\n");)
+        SMTP_DEBUG(printf("[SMTPCLIENT _MXOS_DEBUG_] SmtpSend: \\r\\n\n");)
 
         if (len >= 1 && line[len - 1] == '\r')
         {

@@ -51,7 +51,7 @@ int application_start( void )
     sprintf(time, "%ld ms", mxos_rtos_get_time());
     /*Starting position display time at the third row*/
     OLED_ShowString(0, 4, time);
-    mxos_thread_sleep(1);
+    mos_msleep(1);
   }
 }
 

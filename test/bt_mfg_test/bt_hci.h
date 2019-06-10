@@ -11,7 +11,9 @@
 
 #pragma once
 
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "bt_packet_internal.h"
 #include "bt_hci_interface.h"
 

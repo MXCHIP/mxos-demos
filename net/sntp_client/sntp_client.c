@@ -44,7 +44,7 @@ static struct tm* read_utc_time_from_rtc( void )
     struct tm *utc_time;
 
     /*Read current time from RTC.*/
-    if ( mxos_rtc_get_time( &t ) == kNoErr )
+    if ( mhal_rtc_get_time( &t ) == kNoErr )
     {
         utc_time = localtime(&t);
 
@@ -71,7 +71,7 @@ static void sntp_time_synced( void )
 
     //currentTime = localtime( (const time_t *)&utc_time );
 
-    mxos_rtc_set_time( utc_time );
+    mhal_rtc_set_time( utc_time );
 }
 
 int main( void )

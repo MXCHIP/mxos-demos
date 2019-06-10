@@ -87,16 +87,16 @@ int application_start( void )
     require_noerr( err, exit );
 
     /* Create threads */
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY + 1, "t1", run, 0x800, (mxos_thread_arg_t) p_name1 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY + 1, "t1", run, 0x800, (mxos_thread_arg_t) p_name1 );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY + 1, "t2", run, 0x800, (mxos_thread_arg_t) p_name2 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY + 1, "t2", run, 0x800, (mxos_thread_arg_t) p_name2 );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY + 1, "t3", run, 0x800, (mxos_thread_arg_t) p_name3 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY + 1, "t3", run, 0x800, (mxos_thread_arg_t) p_name3 );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, mxos_APPLICATION_PRIORITY + 1, "t4", run, 0x800, (mxos_thread_arg_t) p_name4 );
+    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY + 1, "t4", run, 0x800, (mxos_thread_arg_t) p_name4 );
     require_noerr( err, exit );
 
     exit:

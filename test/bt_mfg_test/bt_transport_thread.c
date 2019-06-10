@@ -18,7 +18,7 @@
  *                      Macros
  ******************************************************/
 
-#ifdef DEBUG
+#ifdef _MXOS_DEBUG_
 #define DUMP_PACKET( direction, start, end )                        \
 do                                                                  \
 {                                                                   \
@@ -75,7 +75,7 @@ static merr_t bt_transport_thread_receive_packet_handler( void* arg );
 static mxos_worker_thread_t                         bt_transport_thread;
 static mxos_bool_t                                  bt_transport_thread_initialised      = mxos_FALSE;
 static bt_transport_thread_received_packet_handler_t bt_transport_received_packet_handler = NULL;
-#ifdef DEBUG
+#ifdef _MXOS_DEBUG_
 static mxos_bool_t                                    bt_transport_enable_packet_dump      = mxos_FALSE;
 #endif
 
@@ -136,23 +136,23 @@ merr_t bt_transport_thread_send_packet( bt_packet_t* packet )
     }
     else
     {
-        return mxos_rtos_send_asynchronous_event( &bt_transport_thread, bt_transport_thread_send_packet_handler, (void*)packet );
+        return mos_worker_send_async_event( &bt_transport_thread, bt_transport_thread_send_packet_handler, (void*)packet );
     }
 }
 
 merr_t bt_transport_thread_notify_packet_received( void )
 {
-    return mxos_rtos_send_asynchronous_event( &bt_transport_thread, bt_transport_thread_receive_packet_handler, NULL );
+    return mos_worker_send_async_event( &bt_transport_thread, bt_transport_thread_receive_packet_handler, NULL );
 }
 
 merr_t bt_transport_thread_execute_callback( bt_transport_thread_callback_handler_t callback_handler, void* arg )
 {
-    return mxos_rtos_send_asynchronous_event( &bt_transport_thread, callback_handler, arg );
+    return mos_worker_send_async_event( &bt_transport_thread, callback_handler, arg );
 }
 
 merr_t bt_transport_thread_enable_packet_dump( void )
 {
-#ifdef DEBUG
+#ifdef _MXOS_DEBUG_
     bt_transport_enable_packet_dump = mxos_TRUE;
     return kNoErr;
 #else
@@ -162,7 +162,7 @@ merr_t bt_transport_thread_enable_packet_dump( void )
 
 merr_t bt_transport_thread_disable_packet_dump( void )
 {
-#ifdef DEBUG
+#ifdef _MXOS_DEBUG_
     bt_transport_enable_packet_dump = mxos_FALSE;
     return kNoErr;
 #else

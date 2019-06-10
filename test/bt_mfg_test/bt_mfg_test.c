@@ -10,7 +10,9 @@
 
 
 #include "mico.h"
-#include "mxos_rtos.h"
+#include "mos.h"
+#include "mos_worker.h"
+#include "mos_worker.h"
 #include "mxos_platform.h"
 //#include "wiced_bt_platform.h"
 #include "bt_hci_interface.h"
@@ -26,7 +28,7 @@
 
 /* Verify if Bluetooth function returns success.
  * Otherwise, returns the error code immediately.
- * Assert in DEBUG build.
+ * Assert in _MXOS_DEBUG_ build.
  */
 
 /******************************************************

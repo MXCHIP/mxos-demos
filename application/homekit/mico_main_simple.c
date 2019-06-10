@@ -29,7 +29,7 @@
 app_context_t* app_context = NULL;
 extern hapProduct_t hap_product;
 static mxos_worker_thread_t sensor_worker_thread;
-static mxos_timed_event_t sensor_timed_event;
+static mos_worker_timed_event_t sensor_timed_event;
 
 #ifdef USE_PASSWORD
 /* Raw type password */
@@ -197,8 +197,8 @@ static void HKCharacteristicInit( void )
     app_context->occupancy.occupancy = (infra_data >= 3000) ? 0 : 1;
 
     /* Create a worker thread for control and display */
-//    mxos_rtos_create_worker_thread( &sensor_worker_thread, mxos_APPLICATION_PRIORITY, 2048, 1 );
-//    mxos_rtos_register_timed_event( &sensor_timed_event, &sensor_worker_thread, _sensor_read_handler, 2000, NULL );
+//    mxos_rtos_create_worker_thread( &sensor_worker_thread, MOS_APPLICATION_PRIORITY, 2048, 1 );
+//    mos_worker_register_timed_event( &sensor_timed_event, &sensor_worker_thread, _sensor_read_handler, 2000, NULL );
 }
 
 #ifdef USE_MiCOKit_EXT  
@@ -214,7 +214,7 @@ void user_key1_clicked_callback( void )
                           app_context->lightbulb.brightness );
         app_context->lightbulb.on = true;
     }
-    mxos_rtos_send_asynchronous_event( &sensor_worker_thread, display_refresh, NULL );
+    mos_worker_send_async_event( &sensor_worker_thread, display_refresh, NULL );
 }
 
 void user_key2_clicked_callback( void )
@@ -228,7 +228,7 @@ void user_key2_clicked_callback( void )
         dc_motor_set( 1 );
         app_context->fan.on = true;
     }
-    mxos_rtos_send_asynchronous_event( &sensor_worker_thread, display_refresh, NULL );
+    mos_worker_send_async_event( &sensor_worker_thread, display_refresh, NULL );
 }
 #endif
 
