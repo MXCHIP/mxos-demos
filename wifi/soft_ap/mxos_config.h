@@ -8,10 +8,8 @@
 ******************************************************************************
 */
 
-#ifndef __mxos_CONFIG_H
-#define __mxos_CONFIG_H
+#ifndef __MXOS_CONFIG_H__
+#define __MXOS_CONFIG_H__
 
-/* We setup Soft AP by application, disable wifi connection when system is initialized */
-#define mxos_WLAN_CONNECTION_ENABLE             0
 
 #endif

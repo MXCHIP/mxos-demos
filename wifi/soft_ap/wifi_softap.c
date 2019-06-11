@@ -30,35 +30,25 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
-#define app_log(M, ...) mxos_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
+#define app_log(M, ...)       MXOS_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
 
-#define SOFTAP_SSID  "mxchip_zfw"
-#define SOFTAP_KEY   "12345678"
+#define SOFTAP_SSID "areyouok?"
+#define SOFTAP_KEY "66666666"
 
-int main( void )
+int main(void)
 {
-    network_InitTypeDef_st wNetConfig;
+    mwifi_ip_attr_t ip_attr;
 
-    /* Setup WI-Fi and tcpip stack*/
-    mxos_Context_t* context = system_context_init( 0 );
-    mxos_system_init( context );
+    strcpy((char *)ip_attr.localip, "192.168.0.1");
+    strcpy((char *)ip_attr.netmask, "255.255.255.0");
+    strcpy((char *)ip_attr.dnserver, "192.168.0.1");
+    strcpy((char *)ip_attr.gateway, "192.168.0.1");
 
-    /* Setup Soft AP*/
-    memset( &wNetConfig, 0x0, sizeof(network_InitTypeDef_st) );
-    strcpy( (char*) wNetConfig.wifi_ssid, SOFTAP_SSID );
-    strcpy( (char*) wNetConfig.wifi_key, SOFTAP_KEY );
-    wNetConfig.wifi_mode = Soft_AP;
-    wNetConfig.dhcpMode = DHCP_Server;
-    strcpy( (char*) wNetConfig.local_ip_addr, "192.168.0.1" );
-    strcpy( (char*) wNetConfig.net_mask, "255.255.255.0" );
-    strcpy( (char*) wNetConfig.dnsServer_ip_addr, "192.168.0.1" );
+    app_log("Establish Sodt AP, SSID:%s and KEY:%s", SOFTAP_SSID, SOFTAP_KEY);
 
-    app_log("Establish Sodt AP, SSID:%s and KEY:%s", wNetConfig.wifi_ssid, wNetConfig.wifi_key);
-
-    micoWlanStart( &wNetConfig );
+    mwifi_softap_start(SOFTAP_SSID, SOFTAP_KEY, 6, &ip_attr);
 
     return 0;
 }
-
