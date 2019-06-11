@@ -28,21 +28,21 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 #include "HTTPUtils.h"
 #include "SocketUtils.h"
 #include "StringUtils.h"
 
 #define http_client_log(M, ...) custom_log("HTTP", M, ##__VA_ARGS__)
 
-static merr_t onReceivedData( struct _HTTPHeader_t * httpHeader,
-                                uint32_t pos,
-                                uint8_t *data,
-                                size_t len,
-                                void * userContext );
-static void onClearData( struct _HTTPHeader_t * inHeader, void * inUserContext );
+static merr_t onReceivedData(struct _HTTPHeader_t *httpHeader,
+                             uint32_t pos,
+                             uint8_t *data,
+                             size_t len,
+                             void *userContext);
+static void onClearData(struct _HTTPHeader_t *inHeader, void *inUserContext);
 
-static mxos_semaphore_t wait_sem = NULL;
+static mos_semphr_id_t wait_sem = NULL;
 
 typedef struct _http_context_t
 {
@@ -50,59 +50,59 @@ typedef struct _http_context_t
     uint64_t content_length;
 } http_context_t;
 
-void simple_http_get( char* host, char* query );
-void simple_https_get( char* host, char* query );
+void simple_http_get(char *host, char *query);
+void simple_https_get(char *host, char *query);
 
-#define SIMPLE_GET_REQUEST \
-    "GET / HTTP/1.1\r\n" \
+#define SIMPLE_GET_REQUEST    \
+    "GET / HTTP/1.1\r\n"      \
     "Host: www.baidu.com\r\n" \
-    "Connection: close\r\n" \
+    "Connection: close\r\n"   \
     "\r\n"
 
-static void micoNotify_WifiStatusHandler( WiFiEvent status, void* const inContext )
+static void micoNotify_WifiStatusHandler(WiFiEvent status, void *const inContext)
 {
-    UNUSED_PARAMETER( inContext );
-    switch ( status )
+    UNUSED_PARAMETER(inContext);
+    switch (status)
     {
-        case NOTIFY_STATION_UP:
-            mxos_rtos_set_semaphore( &wait_sem );
-            break;
-        case NOTIFY_STATION_DOWN:
-            case NOTIFY_AP_UP:
-            case NOTIFY_AP_DOWN:
-            break;
+    case NOTIFY_STATION_UP:
+        mos_semphr_release(wait_sem);
+        break;
+    case NOTIFY_STATION_DOWN:
+    case NOTIFY_AP_UP:
+    case NOTIFY_AP_DOWN:
+        break;
     }
 }
 
-int main( void )
+int main(void)
 {
     merr_t err = kNoErr;
 
-    mxos_rtos_init_semaphore( &wait_sem, 1 );
+    wait_sem = mos_semphr_new(1);
 
     /*Register user function for MiCO nitification: WiFi status changed */
-    err = mxos_system_notify_register( mxos_notify_WIFI_STATUS_CHANGED,
-                                       (void *) micoNotify_WifiStatusHandler, NULL );
-    require_noerr( err, exit );
+    err = mxos_system_notify_register(mxos_notify_WIFI_STATUS_CHANGED,
+                                      (void *)micoNotify_WifiStatusHandler, NULL);
+    require_noerr(err, exit);
 
     /* Start MiCO system functions according to mxos_config.h */
-    err = mxos_system_init( system_context_init( 0 ) );
-    require_noerr( err, exit );
+    err = mxos_system_init();
+    require_noerr(err, exit);
 
     /* Wait for wlan connection*/
-    mxos_rtos_get_semaphore( &wait_sem, mxos_WAIT_FOREVER );
-    http_client_log( "wifi connected successful" );
+    mos_semphr_acquire(wait_sem, MOS_WAIT_FOREVER);
+    http_client_log("wifi connected successful");
 
     /* Read http data from server */
-    simple_http_get( "www.baidu.com", SIMPLE_GET_REQUEST );
-    simple_https_get( "www.baidu.com", SIMPLE_GET_REQUEST );
+    simple_http_get("www.baidu.com", SIMPLE_GET_REQUEST);
+    simple_https_get("www.baidu.com", SIMPLE_GET_REQUEST);
 
-    exit:
-    mxos_rtos_delete_thread( NULL );
+exit:
+    mos_thread_delete(NULL);
     return err;
 }
 
-void simple_http_get( char* host, char* query )
+void simple_http_get(char *host, char *query)
 {
     merr_t err;
     int client_fd = -1;
@@ -110,65 +110,65 @@ void simple_http_get( char* host, char* query )
     char ipstr[16];
     struct sockaddr_in addr;
     HTTPHeader_t *httpHeader = NULL;
-    http_context_t context = { NULL, 0 };
-    struct hostent* hostent_content = NULL;
+    http_context_t context = {NULL, 0};
+    struct hostent *hostent_content = NULL;
     char **pptr = NULL;
     struct in_addr in_addr;
 
-    hostent_content = gethostbyname( host );
-    require_action_quiet( hostent_content != NULL, exit, err = kNotFoundErr);
-    pptr=hostent_content->h_addr_list;
+    hostent_content = gethostbyname(host);
+    require_action_quiet(hostent_content != NULL, exit, err = kNotFoundErr);
+    pptr = hostent_content->h_addr_list;
     in_addr.s_addr = *(uint32_t *)(*pptr);
-    strcpy( ipstr, inet_ntoa(in_addr));
+    strcpy(ipstr, inet_ntoa(in_addr));
     http_client_log("HTTP server address: %s, host ip: %s", host, ipstr);
 
     /*HTTPHeaderCreateWithCallback set some callback functions */
-    httpHeader = HTTPHeaderCreateWithCallback( 1024, onReceivedData, onClearData, &context );
-    require_action( httpHeader, exit, err = kNoMemoryErr );
+    httpHeader = HTTPHeaderCreateWithCallback(1024, onReceivedData, onClearData, &context);
+    require_action(httpHeader, exit, err = kNoMemoryErr);
 
-    client_fd = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     addr.sin_family = AF_INET;
     addr.sin_addr = in_addr;
     addr.sin_port = htons(80);
-    err = connect( client_fd, (struct sockaddr *)&addr, sizeof(addr) );
-    require_noerr_string( err, exit, "connect http server failed" );
+    err = connect(client_fd, (struct sockaddr *)&addr, sizeof(addr));
+    require_noerr_string(err, exit, "connect http server failed");
 
     /* Send HTTP Request */
-    send( client_fd, query, strlen( query ), 0 );
+    send(client_fd, query, strlen(query), 0);
 
-    FD_ZERO( &readfds );
-    FD_SET( client_fd, &readfds );
+    FD_ZERO(&readfds);
+    FD_SET(client_fd, &readfds);
 
-    select( client_fd + 1, &readfds, NULL, NULL, NULL );
-    if ( FD_ISSET( client_fd, &readfds ) )
+    select(client_fd + 1, &readfds, NULL, NULL, NULL);
+    if (FD_ISSET(client_fd, &readfds))
     {
         /*parse header*/
-        err = SocketReadHTTPHeader( client_fd, httpHeader );
-        switch ( err )
+        err = SocketReadHTTPHeader(client_fd, httpHeader);
+        switch (err)
         {
-            case kNoErr:
-                PrintHTTPHeader( httpHeader );
-                err = SocketReadHTTPBody( client_fd, httpHeader );/*get body data*/
-                require_noerr( err, exit );
-                /*get data and print*/
-                http_client_log( "Content Data: %s", context.content );
-                break;
-            case EWOULDBLOCK:
-                case kNoSpaceErr:
-                case kConnectionErr:
-                default:
-                http_client_log("ERROR: HTTP Header parse error: %d", err);
-                break;
+        case kNoErr:
+            PrintHTTPHeader(httpHeader);
+            err = SocketReadHTTPBody(client_fd, httpHeader); /*get body data*/
+            require_noerr(err, exit);
+            /*get data and print*/
+            http_client_log("Content Data: %s", context.content);
+            break;
+        case EWOULDBLOCK:
+        case kNoSpaceErr:
+        case kConnectionErr:
+        default:
+            http_client_log("ERROR: HTTP Header parse error: %d", err);
+            break;
         }
     }
 
-    exit:
-    http_client_log( "Exit: Client exit with err = %d, fd: %d", err, client_fd );
-    SocketClose( &client_fd );
-    HTTPHeaderDestory( &httpHeader );
+exit:
+    http_client_log("Exit: Client exit with err = %d, fd: %d", err, client_fd);
+    SocketClose(&client_fd);
+    HTTPHeaderDestory(&httpHeader);
 }
 
-void simple_https_get( char* host, char* query )
+void simple_https_get(char *host, char *query)
 {
     merr_t err;
     int client_fd = -1;
@@ -178,115 +178,116 @@ void simple_https_get( char* host, char* query )
     char ipstr[16];
     struct sockaddr_in addr;
     HTTPHeader_t *httpHeader = NULL;
-    http_context_t context = { NULL, 0 };
-    struct hostent* hostent_content = NULL;
+    http_context_t context = {NULL, 0};
+    struct hostent *hostent_content = NULL;
     char **pptr = NULL;
     struct in_addr in_addr;
 
-    hostent_content = gethostbyname( host );
-    require_action_quiet( hostent_content != NULL, exit, err = kNotFoundErr);
+    hostent_content = gethostbyname(host);
+    require_action_quiet(hostent_content != NULL, exit, err = kNotFoundErr);
     pptr = hostent_content->h_addr_list;
     in_addr.s_addr = *(uint32_t *)(*pptr);
-    strcpy( ipstr, inet_ntoa(in_addr));
+    strcpy(ipstr, inet_ntoa(in_addr));
     http_client_log("HTTP server address: host:%s, ip: %s", host, ipstr);
 
     /*HTTPHeaderCreateWithCallback set some callback functions */
-    httpHeader = HTTPHeaderCreateWithCallback( 1024, onReceivedData, onClearData, &context );
-    require_action( httpHeader, exit, err = kNoMemoryErr );
+    httpHeader = HTTPHeaderCreateWithCallback(1024, onReceivedData, onClearData, &context);
+    require_action(httpHeader, exit, err = kNoMemoryErr);
 
-    client_fd = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+    client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     addr.sin_family = AF_INET;
     addr.sin_addr = in_addr;
     addr.sin_port = htons(443);
-    err = connect( client_fd, ( struct sockaddr * )&addr, sizeof(addr) );
-    require_noerr_string( err, exit, "connect http server failed" );
+    err = connect(client_fd, (struct sockaddr *)&addr, sizeof(addr));
+    require_noerr_string(err, exit, "connect http server failed");
 
     ssl_set_client_version(TLS_V1_2_MODE);
-    client_ssl = ssl_connect( client_fd, 0, NULL, &ssl_errno );
-    require_string( client_ssl != NULL, exit, "ERROR: ssl disconnect" );
+    client_ssl = ssl_connect(client_fd, 0, NULL, &ssl_errno);
+    require_string(client_ssl != NULL, exit, "ERROR: ssl disconnect");
 
     /* Send HTTP Request */
-    ssl_send( client_ssl, query, strlen( query ) );
+    ssl_send(client_ssl, query, strlen(query));
 
-    FD_ZERO( &readfds );
-    FD_SET( client_fd, &readfds );
+    FD_ZERO(&readfds);
+    FD_SET(client_fd, &readfds);
 
-    select( client_fd + 1, &readfds, NULL, NULL, NULL );
-    if ( FD_ISSET( client_fd, &readfds ) )
+    select(client_fd + 1, &readfds, NULL, NULL, NULL);
+    if (FD_ISSET(client_fd, &readfds))
     {
         /*parse header*/
-        err = SocketReadHTTPSHeader( client_ssl, httpHeader );
-        switch ( err )
+        err = SocketReadHTTPSHeader(client_ssl, httpHeader);
+        switch (err)
         {
-            case kNoErr:
-                PrintHTTPHeader( httpHeader );
-                err = SocketReadHTTPSBody( client_ssl, httpHeader );/*get body data*/
-                require_noerr( err, exit );
-                /*get data and print*/
-                http_client_log( "Content Data: %s", context.content );
-                break;
-            case EWOULDBLOCK:
-                case kNoSpaceErr:
-                case kConnectionErr:
-                default:
-                http_client_log("ERROR: HTTP Header parse error: %d", err);
-                break;
+        case kNoErr:
+            PrintHTTPHeader(httpHeader);
+            err = SocketReadHTTPSBody(client_ssl, httpHeader); /*get body data*/
+            require_noerr(err, exit);
+            /*get data and print*/
+            http_client_log("Content Data: %s", context.content);
+            break;
+        case EWOULDBLOCK:
+        case kNoSpaceErr:
+        case kConnectionErr:
+        default:
+            http_client_log("ERROR: HTTP Header parse error: %d", err);
+            break;
         }
     }
 
-    exit:
-    http_client_log( "Exit: Client exit with err = %d, fd: %d", err, client_fd );
-    if ( client_ssl ) ssl_close( client_ssl );
-    SocketClose( &client_fd );
-    HTTPHeaderDestory( &httpHeader );
+exit:
+    http_client_log("Exit: Client exit with err = %d, fd: %d", err, client_fd);
+    if (client_ssl)
+        ssl_close(client_ssl);
+    SocketClose(&client_fd);
+    HTTPHeaderDestory(&httpHeader);
 }
 
 /*one request may receive multi reply*/
-static merr_t onReceivedData( struct _HTTPHeader_t * inHeader, uint32_t inPos, uint8_t * inData,
-                                size_t inLen, void * inUserContext )
+static merr_t onReceivedData(struct _HTTPHeader_t *inHeader, uint32_t inPos, uint8_t *inData,
+                             size_t inLen, void *inUserContext)
 {
     merr_t err = kNoErr;
     http_context_t *context = inUserContext;
-    if ( inHeader->chunkedData == false )
+    if (inHeader->chunkedData == false)
     { //Extra data with a content length value
-        if ( inPos == 0 && context->content == NULL )
+        if (inPos == 0 && context->content == NULL)
         {
-            context->content = calloc( inHeader->contentLength + 1, sizeof(uint8_t) );
-            require_action( context->content, exit, err = kNoMemoryErr );
+            context->content = calloc(inHeader->contentLength + 1, sizeof(uint8_t));
+            require_action(context->content, exit, err = kNoMemoryErr);
             context->content_length = inHeader->contentLength;
-
         }
-        memcpy( context->content + inPos, inData, inLen );
-    } else
+        memcpy(context->content + inPos, inData, inLen);
+    }
+    else
     { //extra data use a chunked data protocol
         http_client_log("This is a chunked data, %d", inLen);
-        if ( inPos == 0 )
+        if (inPos == 0)
         {
-            context->content = calloc( inHeader->contentLength + 1, sizeof(uint8_t) );
-            require_action( context->content, exit, err = kNoMemoryErr );
+            context->content = calloc(inHeader->contentLength + 1, sizeof(uint8_t));
+            require_action(context->content, exit, err = kNoMemoryErr);
             context->content_length = inHeader->contentLength;
-        } else
+        }
+        else
         {
             context->content_length += inLen;
-            context->content = realloc( context->content, context->content_length + 1 );
-            require_action( context->content, exit, err = kNoMemoryErr );
+            context->content = realloc(context->content, context->content_length + 1);
+            require_action(context->content, exit, err = kNoMemoryErr);
         }
-        memcpy( context->content + inPos, inData, inLen );
+        memcpy(context->content + inPos, inData, inLen);
     }
 
-    exit:
+exit:
     return err;
 }
 
 /* Called when HTTPHeaderClear is called */
-static void onClearData( struct _HTTPHeader_t * inHeader, void * inUserContext )
+static void onClearData(struct _HTTPHeader_t *inHeader, void *inUserContext)
 {
-    UNUSED_PARAMETER( inHeader );
+    UNUSED_PARAMETER(inHeader);
     http_context_t *context = inUserContext;
-    if ( context->content )
+    if (context->content)
     {
-        free( context->content );
+        free(context->content);
         context->content = NULL;
     }
 }
-
