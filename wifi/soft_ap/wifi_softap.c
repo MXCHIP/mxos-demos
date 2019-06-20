@@ -41,6 +41,8 @@ int main(void)
 {
     mwifi_ip_attr_t ip_attr;
 
+    mxos_network_init();
+
     strcpy((char *)ip_attr.localip, "192.168.0.1");
     strcpy((char *)ip_attr.netmask, "255.255.255.0");
     strcpy((char *)ip_attr.dnserver, "192.168.0.1");
