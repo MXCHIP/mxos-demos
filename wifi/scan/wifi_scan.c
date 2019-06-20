@@ -29,17 +29,17 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
-#define app_log(M, ...) mxos_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
+#define app_log(M, ...) MXOS_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
 
-static void micoNotify_ApListCallback( ScanResult *pApList )
+static void mxosNotify_ApListCallback( int num, mwifi_ap_info_t *ap_list)
 {
     int i = 0;
-    app_log("got %d AP", pApList->ApNum);
-    for ( i = 0; i < pApList->ApNum; i++ )
-        {
-        app_log("ap%d: name = %s  | rssi=%ddBm", i,pApList->ApList[i].ssid, pApList->ApList[i].rssi);
+    app_log("AP NUM:[%d]", num);
+    for ( i = 0; i < num; i++ )
+    {
+        app_log("AP%d: name = %s  | rssi=%ddBm", i,ap_list[i].ssid, ap_list[i].rssi);
 
     }
 }
@@ -47,13 +47,14 @@ static void micoNotify_ApListCallback( ScanResult *pApList )
 int main( void )
 {
     /* Start MiCO system functions according to mxos_config.h*/
-    mxos_system_init( system_context_init( 0 ) );
+    mxos_system_init( );
 
     /* Register user function when wlan scan is completed */
-    mxos_system_notify_register( mxos_notify_WIFI_SCAN_COMPLETED, (void *) micoNotify_ApListCallback, NULL );
+    mxos_system_notify_register( mxos_notify_WIFI_SCAN_COMPLETED, (void *) mxosNotify_ApListCallback, NULL );
 
     app_log("start scan mode, please wait...");
-    micoWlanStartScan();
+
+    mwifi_scan("MXCHIP");
 
     return kNoErr;
 }
