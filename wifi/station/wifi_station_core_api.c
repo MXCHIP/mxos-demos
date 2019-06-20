@@ -35,6 +35,7 @@
 
 #include "mwifi.h"
 #include "mxos_socket.h"
+#include "mtls.h"
 
 static void monitor_cb(uint8_t *data, int len)
 {

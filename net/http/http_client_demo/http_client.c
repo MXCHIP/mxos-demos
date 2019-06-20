@@ -173,7 +173,7 @@ void simple_https_get(char *host, char *query)
     merr_t err;
     int client_fd = -1;
     int ssl_errno = 0;
-    mxos_ssl_t client_ssl = NULL;
+    mssl_t client_ssl = NULL;
     fd_set readfds;
     char ipstr[16];
     struct sockaddr_in addr;

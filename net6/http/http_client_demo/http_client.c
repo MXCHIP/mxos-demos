@@ -221,7 +221,7 @@ merr_t simple_https_get( char* host, char* query )
     fd_set readfds;
     struct sockaddr_storage sockaddr;
 
-    mxos_ssl_t client_ssl = NULL;
+    mssl_t client_ssl = NULL;
 
     HTTPHeader_t *httpHeader = NULL;
     http_context_t context = { NULL, 0 };
