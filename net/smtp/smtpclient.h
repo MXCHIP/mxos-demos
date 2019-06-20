@@ -96,7 +96,7 @@ struct SMTP_S {
     int  sockfd;
     char smtpserver[64];             //SMTP��������ַ
     uint8_t smtpmode;
-    mssl_t ssl;
+    mtls_t ssl;
     uint16_t  smtpport;                  //SMTP������PORT
     char user[EMAIL_ADDR_MAX_LEN+1];  //������֤�û���
     char passwd[65];                //������֤�û�����

@@ -91,7 +91,7 @@ void micoNotify_WifiStatusHandler( WiFiEvent event, void* const inContext )
 void tls_client_thread( mxos_thread_arg_t arg )
 {
     merr_t err = kNoErr;
-    mssl_t ssl = (mssl_t) arg;
+    mtls_t ssl = (mtls_t) arg;
     int inSock = ssl_socket( ssl );
     int len = 0;
     fd_set readfds;
@@ -145,7 +145,7 @@ void tls_server_thread( mxos_thread_arg_t arg )
     char client_ip_str[16];
     int tls_listen_fd = -1, client_fd = -1;
     fd_set readfds;
-    mssl_t client_ssl = NULL;
+    mtls_t client_ssl = NULL;
 
     ssl_set_cert( cert_pem, key_pem );
 
