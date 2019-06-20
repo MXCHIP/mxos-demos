@@ -30,52 +30,37 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
-#define os_timer_log(M, ...) custom_log("OS", M, ##__VA_ARGS__)
+#define app_log(M, ...) MXOS_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
 
-mos_timer_id_t timer_handle;
+static mos_timer_id_t timer_id;
 
-void destroy_timer( void );
-void alarm( void* arg );
+static void alarm(void *arg);
 
-void destroy_timer( void )
+void alarm(void *arg)
 {
-  mxos_stop_timer( &timer_handle );
-  mos_timer_delete(timer_handle );
+  int *count = (int *)arg;
+  app_log("time is coming,value = %d", (*count)++);
+
+  if (*count == 10)
+  {
+    mos_timer_stop(timer_id);
+    mos_timer_delete(timer_id);
+  }
 }
 
-void alarm( void* arg )
+int main(void)
 {
-  int* count = (int*)arg;
-  os_timer_log("time is coming,value = %d", (*count)++ );
+  static int arg = 0;
 
-  if( *count == 10 )
-    destroy_timer();
-}
+  app_log("timer demo");
 
-int application_start( void )
-{
-  merr_t err = kNoErr;
-  os_timer_log("timer demo");
-  int arg = 0;
+  timer_id = mos_timer_new(500, alarm, true, &arg);
+  require(timer_id != NULL, exit);
 
-  err = mxos_init_timer(&timer_handle, 1000, alarm, &arg);
-  require_noerr(err, exit);
-
-  err = mxos_start_timer(&timer_handle);
-  require_noerr(err, exit);
-
-  mos_msleep( mxos_NEVER_TIMEOUT );
+  mos_timer_start(timer_id);
 
 exit:
-  if( err != kNoErr )
-    os_timer_log( "Thread exit with err: %d", err );
-
-  mxos_rtos_delete_thread( NULL );
-  return err;
+  return 0;
 }
-
-
-
-

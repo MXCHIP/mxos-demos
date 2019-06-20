@@ -22,8 +22,8 @@
 ############################################################################### 
 
 
-NAME := App_os_timer
+NAME := App_Timer
 
-$(NAME)_SOURCES := os_timer.c
+$(NAME)_SOURCES := main.c
 				      
 
