@@ -40,7 +40,7 @@ merr_t app_uart_init(uint32_t baudrate)
     merr_t err = kNoErr;
 
     /* Initialize uart driver */
-    err = mhal_uart_open( MXOS_UART_FOR_APP, baudrate, NULL );
+    err = mhal_uart_open( MXOS_UART_FOR_APP, baudrate, 1024, NULL );
     require_noerr( err, exit );
 
 exit:
