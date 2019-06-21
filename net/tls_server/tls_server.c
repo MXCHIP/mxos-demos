@@ -92,7 +92,7 @@ void tls_client_thread( mxos_thread_arg_t arg )
 {
     merr_t err = kNoErr;
     mtls_t ssl = (mtls_t) arg;
-    int inSock = ssl_socket( ssl );
+    int inSock = mtls_socket( ssl );
     int len = 0;
     fd_set readfds;
     char *buf = NULL;
@@ -113,7 +113,7 @@ void tls_client_thread( mxos_thread_arg_t arg )
 
         if ( FD_ISSET( inSock, &readfds ) ) /*one client has data*/
         {
-            len = ssl_recv( ssl, buf, 1024 );
+            len = mtls_recv( ssl, buf, 1024 );
             require_action( len >= 0, exit, err = kConnectionErr );
 
             if ( len == 0 )
@@ -123,7 +123,7 @@ void tls_client_thread( mxos_thread_arg_t arg )
             }
 
             tls_server_log("fd: %d, recv data %d from client", inSock, len);
-            len = ssl_send( ssl, buf, len);
+            len = mtls_send( ssl, buf, len);
             tls_server_log("fd: %d, send data %d to client", inSock, len);
         }
     }
@@ -131,7 +131,7 @@ void tls_client_thread( mxos_thread_arg_t arg )
     if ( err != kNoErr ) tls_server_log( "TLS client thread exit with err: %d", err );
     if ( buf != NULL ) free( buf );
     SocketClose( &inSock );
-    ssl_close( ssl );
+    mtls_close( ssl );
     mxos_rtos_delete_thread( NULL );
 }
 
@@ -147,7 +147,7 @@ void tls_server_thread( mxos_thread_arg_t arg )
     fd_set readfds;
     mtls_t client_ssl = NULL;
 
-    ssl_set_cert( cert_pem, key_pem );
+    mtls_set_cert( cert_pem, key_pem );
 
     tls_listen_fd = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
     require_action( IsValidSocket( tls_listen_fd ), exit, err = kNoResourcesErr );
@@ -172,7 +172,7 @@ void tls_server_thread( mxos_thread_arg_t arg )
         if ( FD_ISSET( tls_listen_fd, &readfds ) )
         {
             client_fd = accept( tls_listen_fd, (struct sockaddr *) &client_addr, &sockaddr_t_size );
-            client_ssl = ssl_accept( client_fd );
+            client_ssl = mtls_accept( client_fd );
             if ( IsValidSocket( client_fd ) && (client_ssl != NULL) )
             {
                 strcpy( client_ip_str, inet_ntoa( client_addr.sin_addr ) );
@@ -185,14 +185,14 @@ void tls_server_thread( mxos_thread_arg_t arg )
                                                         (uint32_t)client_ssl ) )
                 {
                     SocketClose( &client_fd );
-                    ssl_close( client_ssl );
+                    mtls_close( client_ssl );
                 }
 
             }else{
                 SocketClose( &client_fd );
                 if( client_ssl != NULL )
                 {
-                    ssl_close( client_ssl );
+                    mtls_close( client_ssl );
                     client_ssl = NULL;
                 }
             }

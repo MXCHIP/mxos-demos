@@ -482,7 +482,7 @@ static void easylink_command(char *pcWriteBuffer, int xWriteBufferLen,int argc, 
 	
 	cmd_printf("easylink...\r\n");
 	micoWlanStartEasyLinkPlus(60);
-	ssl_connect(1, 100, NULL, NULL);
+	mtls_connect(1, 100, NULL, NULL);
 }
 
 void print_mac(const char *mac)

@@ -238,12 +238,12 @@ merr_t simple_https_get( char* host, char* query )
     err = connect( client_fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr) );
     require_noerr_string( err, exit, "connect HTTPs server failed" );
 
-    ssl_set_client_version(TLS_V1_2_MODE);
-    client_ssl = ssl_connect( client_fd, 0, NULL, &ssl_errno );
+    mtls_set_ver(TLS_V1_2_MODE);
+    client_ssl = mtls_connect( client_fd, 0, NULL, &ssl_errno );
     require_string( client_ssl != NULL, exit, "ERROR: ssl disconnect" );
 
     /* Send HTTP Request */
-    ssl_send( client_ssl, query, strlen( query ) );
+    mtls_send( client_ssl, query, strlen( query ) );
 
     FD_ZERO( &readfds );
     FD_SET( client_fd, &readfds );
@@ -273,7 +273,7 @@ merr_t simple_https_get( char* host, char* query )
 
 exit:
     http_client_log( "Exit: Client exit with err = %d, fd: %d", err, client_fd );
-    if ( client_ssl ) ssl_close( client_ssl );
+    if ( client_ssl ) mtls_close( client_ssl );
     SocketClose( &client_fd );
     HTTPHeaderDestory( &httpHeader );
     return err;

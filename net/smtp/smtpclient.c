@@ -147,13 +147,13 @@ static ssize_t writen(SMTP *psmtp, const void *vptr, size_t n)
     if (psmtp->ssl == NULL) {
         ret = send(psmtp->sockfd, vptr, n, 0);
     } else {
-        ret = ssl_send(psmtp->ssl, (uint8_t *)vptr, n);
+        ret = mtls_send(psmtp->ssl, (uint8_t *)vptr, n);
     }
     
     if (-1 == ret)
     {
         if (psmtp->ssl) {
-            ssl_close(psmtp->ssl);
+            mtls_close(psmtp->ssl);
             psmtp->ssl = NULL;
         }
         close(psmtp->sockfd);
@@ -176,8 +176,8 @@ static ssize_t readtimeout(SMTP *psmtp, void *buf, unsigned int len, int timeout
     struct timeval timeout;
 
     if (psmtp->ssl) {
-        if (ssl_pending(psmtp->ssl) > 0) {
-            nread = ssl_recv(psmtp->ssl, buf, len);
+        if (mtls_pending(psmtp->ssl) > 0) {
+            nread = mtls_recv(psmtp->ssl, buf, len);
             return nread;
         }
     }
@@ -191,9 +191,9 @@ static ssize_t readtimeout(SMTP *psmtp, void *buf, unsigned int len, int timeout
     if (FD_ISSET(psmtp->sockfd, &readfds))
     {
         if (psmtp->ssl != NULL) {
-            nread = ssl_recv(psmtp->ssl, buf, len);
+            nread = mtls_recv(psmtp->ssl, buf, len);
             if (nread < 0) {
-                ssl_close(psmtp->ssl);
+                mtls_close(psmtp->ssl);
                 psmtp->ssl = NULL;
             }
         } else {
@@ -678,7 +678,7 @@ static int SmtpOpen(SMTP *psmtp)
     if ((psmtp->smtpmode == SMTP_SECURITY_SSL)
             || (psmtp->smtpmode == SMTP_SECURITY_TLS))
     {
-        psmtp->ssl = ssl_connect(psmtp->sockfd, 0, NULL, &err);
+        psmtp->ssl = mtls_connect(psmtp->sockfd, 0, NULL, &err);
         if (psmtp->ssl == NULL)
         {
             close(psmtp->sockfd);
@@ -713,7 +713,7 @@ static int SmtpOpen(SMTP *psmtp)
 
         //smtp_step = __LINE__;
 
-        psmtp->ssl = ssl_connect(psmtp->sockfd, 0, NULL, &err);
+        psmtp->ssl = mtls_connect(psmtp->sockfd, 0, NULL, &err);
         if (psmtp->ssl == NULL)
         {
             close(psmtp->sockfd);
