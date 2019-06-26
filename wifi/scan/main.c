@@ -33,24 +33,23 @@
 
 #define app_log(M, ...) MXOS_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
 
-static void mxosNotify_ApListCallback( int num, mwifi_ap_info_t *ap_list)
+static void mxosNotify_ApListCallback(int num, mwifi_ap_info_t *ap_list)
 {
     int i = 0;
     app_log("AP NUM:[%d]", num);
-    for ( i = 0; i < num; i++ )
+    for (i = 0; i < num; i++)
     {
-        app_log("AP%d: name = %s  | rssi=%ddBm", i,ap_list[i].ssid, ap_list[i].rssi);
-
+        app_log("AP%d: name = %s  | rssi=%ddBm", i, ap_list[i].ssid, ap_list[i].rssi);
     }
 }
 
-int main( void )
+int main(void)
 {
     /* Start MiCO system functions according to mxos_config.h*/
-    mxos_system_init( );
+    mxos_system_init();
 
     /* Register user function when wlan scan is completed */
-    mxos_system_notify_register( mxos_notify_WIFI_SCAN_COMPLETED, (void *) mxosNotify_ApListCallback, NULL );
+    mxos_system_notify_register(mxos_notify_WIFI_SCAN_COMPLETED, (void *)mxosNotify_ApListCallback, NULL);
 
     app_log("start scan mode, please wait...");
 
@@ -58,4 +57,3 @@ int main( void )
 
     return kNoErr;
 }
-

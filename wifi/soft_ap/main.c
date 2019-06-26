@@ -34,33 +34,23 @@
 
 #define app_log(M, ...) MXOS_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
 
-#define SOFTAP_SSID  "mxchip_zfw"
-#define SOFTAP_KEY   "12345678"
+#define SOFTAP_SSID "areyouok?"
+#define SOFTAP_KEY "66666666"
 
-int main( void )
+int main(void)
 {
-    mwifi_ip_attr_t wNetConfig;
-
-    /* Setup WI-Fi and tcpip stack*/
-    // mxos_system_init(  );
+    mwifi_ip_attr_t ip_attr;
 
     mxos_network_init();
 
-    /* Setup Soft AP*/
-    memset( &wNetConfig, 0x0, sizeof(mwifi_ip_attr_t) );
-
-    strcpy( (char*) wNetConfig.localip, "192.168.0.1" );
-    strcpy( (char*) wNetConfig.netmask, "255.255.255.0" );
-    strcpy( (char*) wNetConfig.dnserver, "192.168.0.1" );
+    strcpy((char *)ip_attr.localip, "192.168.0.1");
+    strcpy((char *)ip_attr.netmask, "255.255.255.0");
+    strcpy((char *)ip_attr.dnserver, "192.168.0.1");
+    strcpy((char *)ip_attr.gateway, "192.168.0.1");
 
     app_log("Establish Sodt AP, SSID:%s and KEY:%s", SOFTAP_SSID, SOFTAP_KEY);
 
-    mwifi_disconnect();
-
-    mos_sleep(5);
-
-    mwifi_softap_start( SOFTAP_SSID,SOFTAP_KEY,12,&wNetConfig );
+    mwifi_softap_start(SOFTAP_SSID, SOFTAP_KEY, 6, &ip_attr);
 
     return 0;
 }
-

@@ -31,52 +31,22 @@
 
 #include "mxos.h"
 
-#define wifi_station_log(M, ...) custom_log("WIFI", M, ##__VA_ARGS__)
+#define app_log(M, ...) MXOS_LOG(CONFIG_APP_DEBUG, "APP", M, ##__VA_ARGS__)
 
-#define STATION_SSID  "William Xu"
-#define STATION_KEY   "mx099555"
+#define SSID "snowyang"
+#define PASSPHRASE "mxchip123"
 
-static void mxosNotify_WifiStatusHandler(WiFiEvent event,  void* inContext)
+int main(void)
 {
-  switch (event) 
-  {
-  case NOTIFY_STATION_UP:
-    wifi_station_log("Station up");
-    break;
-  case NOTIFY_STATION_DOWN:
-    wifi_station_log("Station down");
-    break;
-  default:
-    break;
-  }
-}
-int main( void )
-{
-  merr_t err = kNoErr;
-  mwifi_connect_attr_t  wNetConfig;
+  mxos_network_init();
 
-  uint32_t mwifi_reconnect_time = 0;
-
-  mxos_system_init(  );
-  
-  /* Register user function when wlan connection status is changed */
-  err = mxos_system_notify_register( mxos_notify_WIFI_STATUS_CHANGED, (void *)mxosNotify_WifiStatusHandler, NULL );
-  require_noerr( err, exit ); 
-
-  /* Initialize wlan parameters */
-  memset( &wNetConfig, 0x0, sizeof(wNetConfig) );
-  wNetConfig.channel = 0;
-  wNetConfig.security = SECURITY_TYPE_AUTO;
-
-  /* Set wifi reconnect time(ms)! */
-  mwifi_reconnect_time = 100;
-  mwifi_set_reconnect_interval(mwifi_reconnect_time);
-  
   /* Connect Now! */
-  wifi_station_log("connecting to %s...", STATION_SSID);
-  mwifi_connect(STATION_SSID,STATION_KEY,strlen(STATION_KEY),&wNetConfig,NULL);
-  
-exit:
-  return err;
-}
+  app_log("connecting to %s...", SSID);
+  mwifi_connect(SSID, PASSPHRASE, strlen(PASSPHRASE), NULL, NULL);
 
+  mos_sleep(8);
+
+  mwifi_ps_on();
+
+  return 0;
+}

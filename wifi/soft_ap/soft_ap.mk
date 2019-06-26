@@ -24,6 +24,6 @@
 
 NAME := App_wifi_softap
 
-$(NAME)_SOURCES := wifi_softap.c
+$(NAME)_SOURCES := main.c
 				      
 

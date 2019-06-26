@@ -24,6 +24,6 @@
 
 NAME := App_scan
 
-$(NAME)_SOURCES := wifi_scan.c
+$(NAME)_SOURCES := main.c
 				      
 
