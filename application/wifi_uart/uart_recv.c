@@ -60,20 +60,9 @@ exit:
 */
 size_t _uart_get_one_packet(uint8_t* inBuf, int inBufLen)
 {
-  int datalen;
   
-  while(1) {
-    if( mhal_uart_read( MXOS_UART_FOR_APP, inBuf, inBufLen, UART_RECV_TIMEOUT) == kNoErr){
+  mhal_uart_read( MXOS_UART_FOR_APP, inBuf, &inBufLen, UART_RECV_TIMEOUT);
       return inBufLen;
-    }
-   else{
-     datalen = mhal_uart_readd_data_len( MXOS_UART_FOR_APP );
-     if(datalen){
-       mhal_uart_read(MXOS_UART_FOR_APP, inBuf, datalen, UART_RECV_TIMEOUT);
-       return datalen;
-     }
-   }
-  }
   
 }
 

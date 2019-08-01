@@ -112,8 +112,10 @@ void tcp_client_thread( mxos_thread_arg_t arg )
     if ( err != kNoErr ) tcp_client_log( "TCP client thread exit with err: %d", err );
     if ( buf != NULL ) free( buf );
     SocketClose( &tcp_fd );
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
 }
+
+
 
 int application_start( void )
 {

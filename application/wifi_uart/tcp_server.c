@@ -78,7 +78,7 @@ void tcp_server_thread(void* arg)
 	  if (j >= 0) {
         strcpy( ip_address, inet_ntoa(addr.sin_addr) );
         server_log("Client %s:%d connected, fd: %d", ip_address, addr.sin_port, j);
-        localTcpClient_thread_handler = mos_thread_new( MXOS_APPLICATION_PRIORITY, "Local Clients", localTcpClient_thread, STACK_SIZE_LOCAL_TCP_CLIENT_THREAD, &j );
+        localTcpClient_thread_handler = mos_thread_new( MOS_APPLICATION_PRIORITY, "Local Clients", localTcpClient_thread, STACK_SIZE_LOCAL_TCP_CLIENT_THREAD, &j );
         if(localTcpClient_thread_handler == NULL)
           SocketClose(&j);
       }

@@ -16,7 +16,7 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
 #include "iperf_task.h"
 #include "iperf_debug.h"
@@ -233,7 +233,7 @@ void iperf_udp_run_server( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     socklen_t len = sizeof(timeout);
@@ -268,7 +268,7 @@ void iperf_udp_run_server( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     cli_len = sizeof(cliaddr);
@@ -448,7 +448,7 @@ void iperf_udp_run_server( char *parameters[] )
     free( buffer );
     // For tradeoff mode, task will be deleted in iperf_udp_run_client
     if ( g_iperf_is_tradeoff_test_client == 0 ) {
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 }
 
@@ -504,7 +504,7 @@ void iperf_tcp_run_server( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     socklen_t len = sizeof(timeout);
@@ -619,7 +619,7 @@ void iperf_tcp_run_server( char *parameters[] )
         free( parameters );
     }
     free( buffer );
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
 
 }
 
@@ -728,7 +728,7 @@ void iperf_tcp_run_client( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     if ( setsockopt( sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos) ) < 0 )
@@ -754,7 +754,7 @@ void iperf_tcp_run_client( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     iperf_get_current_time( &t1, 0 );
@@ -803,7 +803,7 @@ void iperf_tcp_run_client( char *parameters[] )
     {
         free( parameters );
     }
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
 
 }
 
@@ -920,7 +920,7 @@ void iperf_udp_run_client( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     if ( setsockopt( sockfd, IPPROTO_IP, IP_TOS, &tos, sizeof(tos) ) < 0 ) {
@@ -952,7 +952,7 @@ void iperf_udp_run_client( char *parameters[] )
         if ( parameters ) {
             free( parameters );
         }
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 
     // Init UDP data header
@@ -1067,7 +1067,7 @@ void iperf_udp_run_client( char *parameters[] )
     free( buffer );
     // For tradeoff mode, task will be deleted in iperf_udp_run_server
     if ( g_iperf_is_tradeoff_test_server == 0 ) {
-        mxos_rtos_delete_thread( NULL );
+        mos_thread_delete( NULL );
     }
 }
 
@@ -1076,27 +1076,23 @@ count_t iperf_calculate_result( int pkt_size, count_t pkt_count, int need_to_con
     if ( pkt_size > 0 ) {
         pkt_count.Bytes += pkt_size;
         pkt_count.times++;
-    } else
-        ;
+    } 
 
     if ( need_to_convert == 1 ) {
         if ( pkt_count.Bytes >= 1024 ) {
             pkt_count.KBytes += (pkt_count.Bytes / 1024);
             pkt_count.Bytes = pkt_count.Bytes % 1024;
-        } else
-            ;
+        } 
 
         if ( pkt_count.KBytes >= 1024 ) {
             pkt_count.MBytes += (pkt_count.KBytes / 1024);
             pkt_count.KBytes = pkt_count.KBytes % 1024;
-        } else
-            ;
+        } 
 
         if ( pkt_count.MBytes >= 1024 ) {
             pkt_count.GBytes += (pkt_count.MBytes / 1024);
             pkt_count.MBytes = pkt_count.MBytes % 1024;
-        } else
-            ;
+        } 
     }
 
     return pkt_count;

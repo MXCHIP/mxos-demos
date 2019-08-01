@@ -32,22 +32,114 @@
 
 #include "mxos.h"
 
-#define PWM_K_HZ (10 * 1000)
-#define PWM_HZ (100)
+#define app_log(M, ...)             custom_log("App", M, ##__VA_ARGS__)
 
-int main(void)
+#define LED_PWM_R               MXOS_PWM_5
+#define LED_PWM_G               MXOS_PWM_4
+#define LED_PWM_B               MXOS_PWM_3
+#define LED_PWM_C               MXOS_PWM_6
+#define LED_PWM_C_UP            MXOS_PWM_6
+
+#define LED_PWM_R_FREQUENCY     (10*1000)
+#define LED_PWM_G_FREQUENCY     (10*1000)
+#define LED_PWM_B_FREQUENCY     (10*1000)
+#define LED_PWM_C_FREQUENCY     (1000)
+
+#define LED_IO_C_UPDOWN         MXOS_GPIO_39
+
+void led_breath( mhal_pwm_t pwm, uint32_t frequency, uint32_t cycle )
 {
-	merr_t err = kNoErr;
+    float duty = 0;
+    bool is_increase = true;
+    uint32_t count = 0, i = 0;
 
-	/* mxos pwm init*/
-	err = mxos_pwm_init(MXOS_PWM_1, PWM_K_HZ, 50);
+    for(i = 0; i < cycle; i ++)
+    {
+        while(1)
+        {
+            mhal_pwm_open( pwm, frequency, duty );
+            mhal_pwm_start( pwm );
 
-	err = mxos_pwm_start(MXOS_PWM_1);
+            mos_msleep( 15 );
 
-	err = mxos_pwm_stop(MXOS_PWM_1);
+            if ( duty == 0 )
+            {
+                is_increase = true;
+            }
 
-	while (1)
-	{
-		mos_sleep(1.0);
-	}
+            if ( duty == 100 )
+            {
+                is_increase = false;
+            }
+
+            if ( is_increase == true )
+            {
+                duty++;
+            } else
+            {
+                duty--;
+            }
+
+            app_log("count = %ld, duty:%.2f", count, duty);
+
+            if ( duty == 0 )
+            {
+                break;
+            }
+        }
+    }
+
+    mhal_pwm_open( pwm, frequency, 0 );
+    mhal_pwm_start( pwm );
+
+    return;
+}
+
+int main( void )
+{
+    app_log("pwm unit test!");
+
+    app_log("LED R, freq %d", LED_PWM_R_FREQUENCY);
+    mhal_pwm_open( LED_PWM_R, LED_PWM_R_FREQUENCY, 80 );
+    mhal_pwm_start( LED_PWM_R );
+
+    app_log("LED G, freq %d", LED_PWM_G_FREQUENCY);
+    mhal_pwm_open( LED_PWM_G, LED_PWM_G_FREQUENCY, 80 );
+    mhal_pwm_start( LED_PWM_G );
+
+    app_log("LED B, freq %d", LED_PWM_B_FREQUENCY);
+    mhal_pwm_open( LED_PWM_B, LED_PWM_B_FREQUENCY, 80 );
+    mhal_pwm_start( LED_PWM_B );
+
+    app_log("LED C, freq %d", LED_PWM_C_FREQUENCY);
+    
+    mhal_pwm_open( LED_PWM_C, LED_PWM_C_FREQUENCY, 80 );
+    mhal_pwm_start( LED_PWM_C );
+
+//    mhal_gpio_open( LED_IO_C_UPDOWN, OUTPUT_PUSH_PULL );
+
+    while ( 1 )
+    {
+        app_log("R-----------------");
+        mos_msleep(3000);
+
+//        app_log("R-----------------");
+//        led_breath(LED_PWM_R, LED_PWM_R_FREQUENCY, 1);
+//
+//        app_log("G-----------------");
+//        led_breath(LED_PWM_G, LED_PWM_G_FREQUENCY, 1);
+//
+//        app_log("B-----------------");
+//        led_breath(LED_PWM_B, LED_PWM_B_FREQUENCY, 1);
+
+//        app_log("C DOWN-----------------");
+//        mhal_gpio_low( LED_IO_C_UPDOWN );
+//        led_breath(LED_PWM_C, LED_PWM_C_FREQUENCY, 1);
+//
+//        app_log("C UP-----------------");
+//        mhal_gpio_high( LED_IO_C_UPDOWN );
+//        led_breath(LED_PWM_C, LED_PWM_C_FREQUENCY, 1);
+    }
+
+    return 0;
 }

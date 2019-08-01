@@ -16,14 +16,14 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 #include "iperf_cli.h"
 
 #define  iperf_test_log(M, ...) custom_log("Iperf", M, ##__VA_ARGS__)
 
 uint8_t uap_up = 0;
 
-static void micoNotify_WifiStatusHandler( WiFiEvent status, void* const inContext )
+static void Notify_WifiStatusHandler( WiFiEvent status, void* const inContext )
 {
   switch (status) 
   {
@@ -42,17 +42,17 @@ static void micoNotify_WifiStatusHandler( WiFiEvent status, void* const inContex
   }
 }
 
-int application_start( void )
+int main( void )
 {
     merr_t err = kNoErr;
 
     /*Register user function for MiCO nitification: WiFi status changed */
     err = mxos_system_notify_register( mxos_notify_WIFI_STATUS_CHANGED,
-                                       (void *) micoNotify_WifiStatusHandler, NULL );
+                                       (void *) Notify_WifiStatusHandler, NULL );
     require_noerr( err, exit );
 
     /* Start MiCO system functions according to mxos_config.h */
-    mxos_system_init( system_context_init( 0 ) );
+    mxos_system_init( );
 
     /* Register iperf command to test   */
     iperf_cli_register();

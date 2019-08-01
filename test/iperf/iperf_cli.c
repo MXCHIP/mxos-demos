@@ -16,7 +16,7 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
 #include "iperf_debug.h"
 #include "iperf_task.h"
@@ -54,10 +54,10 @@ struct cli_command iperf_test_message_cmd[] = {
 /******************************************************
  *               Function Declarations
  ******************************************************/
-static void iperf_udp_run_server_thread( mxos_thread_arg_t arg );
-static void iperf_tcp_run_server_thread( mxos_thread_arg_t arg );
-static void iperf_udp_run_client_thread( mxos_thread_arg_t arg );
-static void iperf_tcp_run_client_thread( mxos_thread_arg_t arg );
+static void iperf_udp_run_server_thread( void * arg );
+static void iperf_tcp_run_server_thread( void * arg );
+static void iperf_udp_run_client_thread( void * arg );
+static void iperf_tcp_run_client_thread( void * arg );
 
 static void _cli_iperf_server_Command( int argc, char **argv );
 static void _cli_iperf_client_Command( int argc, char **argv );
@@ -71,22 +71,22 @@ extern uint8_t uap_up;
  *               Function Definitions
  ******************************************************/
 
-static void iperf_udp_run_server_thread( mxos_thread_arg_t arg )
+static void iperf_udp_run_server_thread( void * arg )
 {
     iperf_udp_run_server( (char **) arg );
 }
 
-static void iperf_tcp_run_server_thread( mxos_thread_arg_t arg )
+static void iperf_tcp_run_server_thread( void * arg )
 {
     iperf_tcp_run_server( (char **) arg );
 }
 
-static void iperf_udp_run_client_thread( mxos_thread_arg_t arg )
+static void iperf_udp_run_client_thread( void * arg )
 {
     iperf_udp_run_client( (char **) arg );
 }
 
-static void iperf_tcp_run_client_thread( mxos_thread_arg_t arg )
+static void iperf_tcp_run_client_thread( void * arg )
 {
     iperf_tcp_run_client( (char **) arg );
 }
@@ -118,18 +118,18 @@ static void _cli_iperf_server_Command( int argc, char **argv )
         {
             printf( "Iperf UDP Server: Start!\r\n" );
             printf( "Iperf UDP Server Receive Timeout = 20 (secs)\r\n" );
-            mxos_rtos_create_thread( NULL, IPERF_PRIO, IPERF_NAME, iperf_udp_run_server_thread, IPERF_STACKSIZE,
-                                     (mxos_thread_arg_t) g_iperf_param );
+            mos_thread_new( IPERF_PRIO, IPERF_NAME, iperf_udp_run_server_thread, IPERF_STACKSIZE,
+                                     (void*) g_iperf_param );
             is_create_task = 1;
-            break;
+            return;
         }
     }
-    if ( strcmp( argv[i], "-u" ) != 0 )
+
     {
         printf( "Iperf TCP Server: Start!\r\n" );
         printf( "Iperf TCP Server Receive Timeout = 20 (secs)\r\n" );
-        mxos_rtos_create_thread( NULL, IPERF_PRIO, IPERF_NAME, iperf_tcp_run_server_thread, IPERF_STACKSIZE,
-                                 (mxos_thread_arg_t) g_iperf_param );
+        mos_thread_new( IPERF_PRIO, IPERF_NAME, iperf_tcp_run_server_thread, IPERF_STACKSIZE,
+                                 (void*) g_iperf_param );
         is_create_task = 1;
     }
 
@@ -165,18 +165,17 @@ static void _cli_iperf_client_Command( int argc, char **argv )
         if ( strcmp( argv[i], "-u" ) == 0 )
         {
             printf( "Iperf UDP Client: Start!\r\n" );
-            mxos_rtos_create_thread( NULL, IPERF_PRIO, IPERF_NAME, iperf_udp_run_client_thread, IPERF_STACKSIZE,
-                                     (mxos_thread_arg_t) g_iperf_param );
+            mos_thread_new( IPERF_PRIO, IPERF_NAME, iperf_udp_run_client_thread, IPERF_STACKSIZE,
+                                     (void*) g_iperf_param );
             is_create_task = 1;
-            break;
+            return;
         }
     }
 
-    if ( strcmp( argv[i], "-u" ) != 0 )
     {
         printf( "Iperf TCP Client: Start!\r\n" );
-        mxos_rtos_create_thread( NULL, IPERF_PRIO, IPERF_NAME, iperf_tcp_run_client_thread, IPERF_STACKSIZE,
-                                 (mxos_thread_arg_t) g_iperf_param );
+        mos_thread_new( IPERF_PRIO, IPERF_NAME, iperf_tcp_run_client_thread, IPERF_STACKSIZE,
+                                 (void*) g_iperf_param );
         is_create_task = 1;
     }
 
@@ -279,44 +278,27 @@ Add CLI commands to connect an AP or start soft-AP
 
 static void connect_ap(char *ssid, char *key)
 {
-    network_InitTypeDef_adv_st  wNetConfigAdv={0};
-    /* Initialize wlan parameters */
-    strcpy((char*)wNetConfigAdv.ap_info.ssid, ssid);   /* wlan ssid string */
+    int keylen=0;
     if (key) {
-        strcpy((char*)wNetConfigAdv.key, key);                /* wlan key string or hex data in WEP mode */
-        wNetConfigAdv.key_len = strlen(key);                  /* wlan key length */
-    } else {
-        wNetConfigAdv.key_len = 0;
-    }
-    wNetConfigAdv.ap_info.security = SECURITY_TYPE_AUTO;          /* wlan security mode */
-    wNetConfigAdv.ap_info.channel = 0;                            /* Select channel automatically */
-    wNetConfigAdv.dhcpMode = DHCP_Client;                         /* Fetch Ip address from DHCP server */
-    wNetConfigAdv.wifi_retry_interval = 100;                      /* Retry interval after a failure connection */
-
+        keylen = strlen(key);                  /* wlan key length */
+    } 
     /* Connect Now! */
-    printf ("connecting to %s...\r\n", wNetConfigAdv.ap_info.ssid);
-    micoWlanStartAdv(&wNetConfigAdv);
+    printf ("connecting to %s...\r\n", ssid);
+    mwifi_connect(ssid, key, keylen, NULL, NULL);
 }
 
 static void ap_start(char *ssid, char *key)
 {
-    network_InitTypeDef_st wNetConfig;
+    mwifi_ip_attr_t ip;
 
-    memset(&wNetConfig, 0x0, sizeof(network_InitTypeDef_st));
+    memset(&ip, 0x0, sizeof(ip));
 
-    strcpy((char*)wNetConfig.wifi_ssid, ssid);
-    if (key)
-        strcpy((char*)wNetConfig.wifi_key, key);
+    strcpy((char*)ip.localip, "192.168.0.1");
+    strcpy((char*)ip.netmask, "255.255.255.0");
+    strcpy((char*)ip.gateway, "192.168.0.1");
 
-    wNetConfig.wifi_mode = Soft_AP;
-    wNetConfig.dhcpMode = DHCP_Server;
-    wNetConfig.wifi_retry_interval = 100;
-    strcpy((char*)wNetConfig.local_ip_addr, "192.168.0.1");
-    strcpy((char*)wNetConfig.net_mask, "255.255.255.0");
-    strcpy((char*)wNetConfig.dnsServer_ip_addr, "192.168.0.1");
-
-    printf("ssid:%s  key:%s\r\n", wNetConfig.wifi_ssid, wNetConfig.wifi_key);
-    micoWlanStart(&wNetConfig);
+    printf("ssid:%s  key:%s\r\n", ssid, key);
+    mwifi_softap_start(ssid, key, 6, &ip);
 }
 
 static void ap_command(char *pcWriteBuffer, int xWriteBufferLen,int argc, char **argv)

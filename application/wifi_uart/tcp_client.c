@@ -124,7 +124,6 @@ void tcp_client_thread(void* arg)
         sppWlanCommandProcess(inDataBuffer, &len, remoteTcpClient_fd, context);
       }
 
-    Continue:    
       continue;
       
     ReConnWithDelay:

@@ -37,7 +37,7 @@
 
 static sflash_handle_t sflash_handle = {0x0, 0x0, SFLASH_WRITE_NOT_ALLOWED};
 
-const mxos_spi_device_t mxos_spi_flash =
+const mhal_spi_dev_t mxos_spi_flash =
 {
   .port        = mxos_SPI_1,
   .chip_select = mxos_GPIO_8,

@@ -8,7 +8,8 @@
 ******************************************************************************
 */
 
-#ifndef __mxos_CONFIG_H
-#define __mxos_CONFIG_H
+#ifndef __MXOS_CONFIG_H__
+#define __MXOS_CONFIG_H__
+
 
 #endif
