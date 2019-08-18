@@ -29,21 +29,21 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 #include "SocketUtils.h"
 
 #define tcp_client_log(M, ...) custom_log("TCP", M, ##__VA_ARGS__)
 
-static char tcp_remote_ip[16] = "192.168.3.53"; /*remote ip address*/
+static char tcp_remote_ip[16] = "192.168.31.86"; /*remote ip address*/
 static int tcp_remote_port = 6000; /*remote port*/
-static mxos_semaphore_t wait_sem = NULL;
+static mos_semphr_id_t wait_sem = NULL;
 
 static void micoNotify_WifiStatusHandler( WiFiEvent status, void* const inContext )
 {
     switch ( status )
     {
         case NOTIFY_STATION_UP:
-            mxos_rtos_set_semaphore( &wait_sem );
+            mos_semphr_release( wait_sem );
             break;
         case NOTIFY_STATION_DOWN:
         case NOTIFY_AP_UP:
@@ -53,9 +53,8 @@ static void micoNotify_WifiStatusHandler( WiFiEvent status, void* const inContex
 }
 
 /*when client connected wlan success,create socket*/
-void tcp_client_thread( mxos_thread_arg_t arg )
+void tcp_client_thread(  )
 {
-    UNUSED_PARAMETER( arg );
 
     merr_t err;
     struct sockaddr_in addr;
@@ -112,14 +111,14 @@ void tcp_client_thread( mxos_thread_arg_t arg )
     if ( err != kNoErr ) tcp_client_log( "TCP client thread exit with err: %d", err );
     if ( buf != NULL ) free( buf );
     SocketClose( &tcp_fd );
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
 }
 
-int application_start( void )
+int main( void )
 {
     merr_t err = kNoErr;
 
-    mxos_rtos_init_semaphore( &wait_sem, 1 );
+    wait_sem = mos_semphr_new(1);
 
     /*Register user function for MiCO nitification: WiFi status changed */
     err = mxos_system_notify_register( mxos_notify_WIFI_STATUS_CHANGED,
@@ -127,21 +126,21 @@ int application_start( void )
     require_noerr( err, exit );
 
     /* Start MiCO system functions according to mxos_config.h */
-    err = mxos_system_init( system_context_init( 0 ) );
+    err = mxos_system_init(  );
     require_noerr( err, exit );
 
     /* Wait for wlan connection*/
-    mxos_rtos_get_semaphore( &wait_sem, mxos_WAIT_FOREVER );
+    mos_semphr_acquire( wait_sem, MOS_WAIT_FOREVER );
     tcp_client_log( "wifi connected successful" );
 
     /* Start TCP client thread */
-    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "TCP_client", tcp_client_thread, 0x800, 0 );
-    require_noerr_string( err, exit, "ERROR: Unable to start the tcp client thread." );
+    mos_thread_new( MOS_APPLICATION_PRIORITY, "TCP_client", tcp_client_thread, 0x800, 0 );
+  
 
     exit:
     if ( wait_sem != NULL )
-        mxos_rtos_deinit_semaphore( &wait_sem );
-    mxos_rtos_delete_thread( NULL );
+        mos_semphr_delete( wait_sem );
+    mos_thread_delete( NULL );
     return err;
 }
 
