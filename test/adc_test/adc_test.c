@@ -41,12 +41,12 @@ int main(void)
 	float voltage = 0;
 
 	/* adc init */
-	err = mxos_adc_init(MXOS_ADC_1,10000);
+	err = mhal_adc_open(MXOS_ADC_1,10000);
 
 	while (1)
 	{
 		/* adc take sample */
-		err = mxos_adc_take_sample(MXOS_ADC_1,&adc_out);
+		err = mhal_adc_read(MXOS_ADC_1,&adc_out);
 
 		voltage = AD2MV(adc_out,4096);//4096 2^12
 
