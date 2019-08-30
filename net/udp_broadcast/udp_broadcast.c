@@ -29,7 +29,7 @@
  ******************************************************************************
  */
 
-#include "mico.h"
+#include "mxos.h"
 
 #define udp_broadcast_log(M, ...) custom_log("UDP", M, ##__VA_ARGS__)
 
@@ -39,9 +39,8 @@
 char* data = "UDP broadcast data";
 
 /*create udp socket*/
-void udp_broadcast_thread( mxos_thread_arg_t arg )
+void udp_broadcast_thread(  )
 {
-    UNUSED_PARAMETER( arg );
 
     merr_t err;
     struct sockaddr_in addr;
@@ -70,30 +69,31 @@ void udp_broadcast_thread( mxos_thread_arg_t arg )
         /*the receiver should bind at port=20000*/
         sendto( udp_fd, data, strlen( data ), 0, (struct sockaddr *) &addr, sizeof(addr) );
 
-        mos_msleep( 2 );
+        mos_msleep( 2000 );
     }
 
     exit:
     if ( err != kNoErr )
         udp_broadcast_log("UDP thread exit with err: %d", err);
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
 }
 
-int application_start( void )
+int main( void )
 {
     merr_t err = kNoErr;
 
     /* Start MiCO system functions according to mxos_config.h */
-    err = mxos_system_init( system_context_init( 0 ) );
+    err = mxos_system_init(  );
     require_noerr( err, exit );
 
-    err = mxos_rtos_create_thread( NULL, MOS_APPLICATION_PRIORITY, "udp_broadcast", udp_broadcast_thread, 0x800, 0 );
-    require_noerr_string( err, exit, "ERROR: Unable to start the UDP thread." );
+    mos_msleep( 10000 );
 
+    mos_thread_new( MOS_APPLICATION_PRIORITY, "udp_broadcast", udp_broadcast_thread, 0x800, 0 );
+  
     exit:
     if ( err != kNoErr )
         udp_broadcast_log("Thread exit with err: %d", err);
-    mxos_rtos_delete_thread( NULL );
+    mos_thread_delete( NULL );
     return err;
 }
 
