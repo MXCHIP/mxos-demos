@@ -50,7 +50,7 @@ static void _led_green_Timeout_handler( void* arg )
   (void)(arg);
   
   // green led bink
-   MicoGpioOutputTrigger((mhal_gpio_t)mxos_SYS_LED);
+   MicoGpioOutputTrigger((int)mxos_SYS_LED);
 }
 
 static void _led_red_Timeout_handler( void* arg )
@@ -58,7 +58,7 @@ static void _led_red_Timeout_handler( void* arg )
   (void)(arg);
   
   // red led bink
-   MicoGpioOutputTrigger((mhal_gpio_t)mxos_RF_LED);
+   MicoGpioOutputTrigger((int)mxos_RF_LED);
 }
 
 USED void mxos_system_delegate_config_will_start( void )

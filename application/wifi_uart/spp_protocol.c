@@ -60,7 +60,7 @@ merr_t sppWlanCommandProcess(unsigned char *inBuf, int *inBufLen, int inSocketFd
   UNUSED_PARAMETER(inContext);
   merr_t err = kUnknownErr;
 
-  err = mhal_uart_write(MXOS_UART_FOR_APP, inBuf, *inBufLen);
+  err = mhal_uart_write(MXOS_APP_UART, inBuf, *inBufLen);
 
   *inBufLen = 0;
   return err;

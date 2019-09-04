@@ -39,8 +39,26 @@ merr_t app_uart_init(uint32_t baudrate)
 {
     merr_t err = kNoErr;
 
+    mhal_uart_config_t config = 
+    {
+        .baudrate = MXOS_APP_UART_BAUDRATE,
+        .data_width = DATA_WIDTH_8BIT,
+        .parity = NO_PARITY,
+        .stop_bits = STOP_BITS_1,
+        .flow_control = FLOW_CONTROL_DISABLED,
+        .buffersize = 1024,
+    };
+
+    mhal_uart_pinmux_t pinmux = 
+    {
+        .tx = MXOS_APP_UART_RXD,
+        .rx = MXOS_APP_UART_TXD,
+        .rts = MXOS_APP_UART_RTS,
+        .cts = MXOS_APP_UART_CTS,
+    };
+
     /* Initialize uart driver */
-    err = mhal_uart_open( MXOS_UART_FOR_APP, baudrate, 1024, NULL );
+    err = mhal_uart_open( MXOS_APP_UART, &config, &pinmux );
     require_noerr( err, exit );
 
 exit:

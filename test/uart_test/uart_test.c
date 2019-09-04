@@ -46,19 +46,19 @@ uint32_t _uart_get_one_packet(uint8_t *inBuf, int inBufLen)
 	while (1)
 	{
 		// printf("datalen is %d\r\n",datalen);
-		if (mhal_uart_read_buf(MXOS_UART_FOR_APP, inBuf, inBufLen, UART_RECV_TIMEOUT) == kNoErr)
+		if (mhal_uart_read_buf(MXOS_APP_UART, inBuf, inBufLen, UART_RECV_TIMEOUT) == kNoErr)
 		{
 			
 			return inBufLen;
 		}
 		else
 		{
-			datalen = mhal_uart_recved_len(MXOS_UART_FOR_APP); //  printf("datalen is %d\r\n",datalen);
+			datalen = mhal_uart_recved_len(MXOS_APP_UART); //  printf("datalen is %d\r\n",datalen);
 			
 			if (datalen)
 			{
 				printf("datalen is %d\r\n",datalen);
-				err = mhal_uart_read_buf(MXOS_UART_FOR_APP, inBuf, datalen, UART_RECV_TIMEOUT);
+				err = mhal_uart_read_buf(MXOS_APP_UART, inBuf, datalen, UART_RECV_TIMEOUT);
 				printf("data is %x err:%d\r\n",inBuf[0],err);
 				return datalen;
 			}
@@ -71,7 +71,7 @@ int main(void)
 {
 	merr_t err = kNoErr;
 
-	err = mhal_uart_open(MXOS_UART_FOR_APP, 921600,1024,NULL);
+	err = mhal_uart_open(MXOS_APP_UART, 921600,1024,NULL);
 	
 	while (1)
 	{
@@ -83,7 +83,7 @@ int main(void)
 		}
 		else
 		{
-			err = mhal_uart_write(MXOS_UART_FOR_APP, recv_buf, recv_len);
+			err = mhal_uart_write(MXOS_APP_UART, recv_buf, recv_len);
 		}
 	}
 

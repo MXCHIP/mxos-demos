@@ -60,7 +60,7 @@ exit:
 */
 size_t _uart_get_one_packet(uint8_t* inBuf, int inBufLen)
 {
-  mhal_uart_read( MXOS_UART_FOR_APP, inBuf, (uint32_t *)&inBufLen, UART_RECV_TIMEOUT);
+  mhal_uart_read( MXOS_APP_UART, inBuf, (uint32_t *)&inBufLen, UART_RECV_TIMEOUT);
   return inBufLen;
 }
 

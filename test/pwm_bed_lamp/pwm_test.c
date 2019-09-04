@@ -47,7 +47,7 @@
 
 #define LED_IO_C_UPDOWN         MXOS_GPIO_39
 
-void led_breath( mhal_pwm_t pwm, uint32_t frequency, uint32_t cycle )
+void led_breath( int pwm, uint32_t frequency, uint32_t cycle )
 {
     float duty = 0;
     bool is_increase = true;

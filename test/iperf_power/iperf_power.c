@@ -621,7 +621,7 @@ int application_start( void )
   //mxos_rtos_create_thread(NULL, 4, "", printf_thread, 0x200, NULL);
   while(1) {
   	msleep(200);
-	MicoGpioOutputTrigger((mhal_gpio_t)mxos_SYS_LED);
+	MicoGpioOutputTrigger((int)mxos_SYS_LED);
 	//MicoRtcGetTime(&t);
 	//printf("%02d��%02d��%02d�� %02d:%02d:%02d\r\n",
 	//		t.year, t.month, t.date, t.hr, t.min, t.sec);

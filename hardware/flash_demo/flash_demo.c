@@ -51,7 +51,7 @@ int main( void )
 
 #if 0
     printf("current index %d\r\n", ota_get_cur_index());
-    for(part = MXOS_PARTITION_APPLICATION; part<MXOS_PARTITION_MAX; part++) {
+    for(part = MODULE_PARTITION_APPLICATION; part<MODULE_PARTITION_MAX; part++) {
         offset=0;
         memset(tmp, 0, 1024);
         mhal_flash_read( part, &offset, tmp, 1024);
@@ -60,7 +60,7 @@ int main( void )
     }
 #endif
     printf("~~~~~~~~~~OTA partition test ++: \r\n");
-    part = MXOS_PARTITION_OTA_TEMP;
+    part = MODULE_PARTITION_OTA_TEMP;
     offset=0;
     memset(tmp, 0, 1024);
     mhal_flash_read( part, &offset, tmp, 1024);
@@ -82,7 +82,7 @@ int main( void )
     dump_hex(tmp, 1024);
 
     printf("~~~~~~~~~~USER partition test +i: \r\n");
-    part = MXOS_PARTITION_USER;
+    part = MODULE_PARTITION_USER;
     offset=0;
     memset(tmp, 0, 1024);
     mhal_flash_read( part, &offset, tmp, 1024);
