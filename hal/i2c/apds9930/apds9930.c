@@ -136,8 +136,6 @@ merr_t apds9930_sensor_init(void)
       .scl = MXOS_SCL,
   };
 
-  mhal_i2c_close(MXOS_I2C);
-
   /*int apds9930 sensor i2c device*/
   err = mhal_i2c_open(MXOS_I2C, I2C_ADDR_WIDTH_7BIT, 100000, &pinmux);
   require_noerr_quiet(err, exit);

@@ -29,6 +29,6 @@
 
 #define MXOS_I2C MXKIT_I2C
 #define MXOS_SDA MXKIT_SDA
-#define MXOS_SCL MXKIT_SCK
+#define MXOS_SCL MXKIT_SCL
 
 #endif

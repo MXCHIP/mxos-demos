@@ -51,8 +51,8 @@ merr_t app_uart_init(uint32_t baudrate)
 
     mhal_uart_pinmux_t pinmux = 
     {
-        .tx = MXOS_APP_UART_RXD,
-        .rx = MXOS_APP_UART_TXD,
+        .tx = MXOS_APP_UART_TXD,
+        .rx = MXOS_APP_UART_RXD,
         .rts = MXOS_APP_UART_RTS,
         .cts = MXOS_APP_UART_CTS,
     };
