@@ -59,8 +59,9 @@ const flash_vendor_t flash_vendor_list[] = {
 static uint8_t wdata[FLASH_TEST_SIZE];
 static uint8_t rdata[FLASH_TEST_SIZE];
 
-void dumphex(uint8_t *buf, uint32_t len)
+static void dumphex(uint8_t *buf, uint32_t len)
 {
+  printf("Dumped flash data:\r\n");
   printf("-----------------------------------------------------");
   for (int i = 0; i < len; i++)
   {
@@ -71,6 +72,14 @@ void dumphex(uint8_t *buf, uint32_t len)
     printf("%02X ", buf[i]);
   }
   printf("\r\n");
+  printf("-----------------------------------------------------");
+  printf("\r\n");
+}
+
+static void dump_flashdata(void)
+{
+  sFlash_Read(FLASH_TEST_ADDR, rdata, FLASH_TEST_SIZE);
+  dumphex(rdata, FLASH_TEST_SIZE);
 }
 
 int main(void)
@@ -80,12 +89,13 @@ int main(void)
       .mosi = MXOS_MOSI,
       .clk = MXOS_SCK,
   };
+
+  app_log("Test address = 0x%x, length = %d bytes", FLASH_TEST_ADDR, FLASH_TEST_SIZE);
+
   mhal_spi_open(MXOS_SPI, &pinmux);
   mhal_spi_format(MXOS_SPI, 1000000, 0, 8);
   mhal_gpio_open(MXOS_CS, OUTPUT_PUSH_PULL);
   mhal_gpio_high(MXOS_CS);
-
-  app_log("SPI flash demo.");
 
   uint32_t jedecid = sFlash_readJEDECID();
   app_log("JEDEC ID: %06lx", jedecid);
@@ -100,35 +110,32 @@ int main(void)
   uint8_t reg = sFlash_readStatusReg1();
   app_log("Status: %02x", reg);
 
-  app_log("Test address = 0x%x, length = %d bytes", FLASH_TEST_ADDR, FLASH_TEST_SIZE);
+  /* Read data from flash after startup */
+  dump_flashdata();
 
-  app_log("Reading ...");
-  sFlash_Read(FLASH_TEST_ADDR, rdata, FLASH_TEST_SIZE);
-  dumphex(rdata, FLASH_TEST_SIZE);
-
+  /* Erase flash */
   app_log("Erasing ...");
   memset(wdata, 0xFF, FLASH_TEST_SIZE);
   sFlash_Erase(FLASH_TEST_ADDR, FLASH_TEST_SIZE, NULL);
-  sFlash_Read(FLASH_TEST_ADDR, rdata, FLASH_TEST_SIZE);
+  dump_flashdata();
   if (memcmp(wdata, rdata, FLASH_TEST_SIZE) != 0)
   {
-    dumphex(rdata, FLASH_TEST_SIZE);
     app_log("Error");
     return 1;
   }
-  app_log("OK");
+  app_log("Success");
 
+  /* Write flash */
   app_log("Writting ...");
   memset(wdata, 0x66, FLASH_TEST_SIZE);
   sFlash_Write(FLASH_TEST_ADDR, wdata, FLASH_TEST_SIZE);
-  sFlash_Read(FLASH_TEST_ADDR, rdata, FLASH_TEST_SIZE);
+  dump_flashdata();
   if (memcmp(wdata, rdata, FLASH_TEST_SIZE) != 0)
   {
-    dumphex(rdata, FLASH_TEST_SIZE);
     app_log("Error");
     return 1;
   }
-  app_log("OK");
+  app_log("Success");
 
   return 0;
 }
