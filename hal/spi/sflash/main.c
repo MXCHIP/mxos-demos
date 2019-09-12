@@ -85,17 +85,17 @@ static void dump_flashdata(void)
 int main(void)
 {
   mhal_spi_pinmux_t pinmux = {
-      .miso = MXOS_MISO,
-      .mosi = MXOS_MOSI,
-      .clk = MXOS_SCK,
+      .miso = MXKIT_MISO,
+      .mosi = MXKIT_MOSI,
+      .clk = MXKIT_SCK,
   };
 
   app_log("Test address = 0x%x, length = %d bytes", FLASH_TEST_ADDR, FLASH_TEST_SIZE);
 
-  mhal_spi_open(MXOS_SPI, &pinmux);
-  mhal_spi_format(MXOS_SPI, 1000000, 0, 8);
-  mhal_gpio_open(MXOS_CS, OUTPUT_PUSH_PULL);
-  mhal_gpio_high(MXOS_CS);
+  mhal_spi_open(MXKIT_SPI, &pinmux);
+  mhal_spi_format(MXKIT_SPI, 1000000, 0, 8);
+  mhal_gpio_open(MXKIT_CS, OUTPUT_PUSH_PULL);
+  mhal_gpio_high(MXKIT_CS);
 
   uint32_t jedecid = sFlash_readJEDECID();
   app_log("JEDEC ID: %06lx", jedecid);
@@ -147,22 +147,22 @@ void sFlash_DelayMs(uint32_t ms)
 
 void sFlash_Command(uint8_t cmd, uint8_t *arg, uint32_t argc, uint8_t *buf, uint32_t n, sFlashDir_t dir)
 {
-  mhal_gpio_low(MXOS_CS);
-  mhal_spi_write_and_read(MXOS_SPI, &cmd, NULL, 1);
+  mhal_gpio_low(MXKIT_CS);
+  mhal_spi_write_and_read(MXKIT_SPI, &cmd, NULL, 1);
   if (arg && argc > 0)
   {
-    mhal_spi_write_and_read(MXOS_SPI, arg, NULL, argc);
+    mhal_spi_write_and_read(MXKIT_SPI, arg, NULL, argc);
   }
   if (buf && n > 0)
   {
     if (dir == DIR_W)
     {
-      mhal_spi_write_and_read(MXOS_SPI, buf, NULL, n);
+      mhal_spi_write_and_read(MXKIT_SPI, buf, NULL, n);
     }
     else
     {
-      mhal_spi_write_and_read(MXOS_SPI, NULL, buf, n);
+      mhal_spi_write_and_read(MXKIT_SPI, NULL, buf, n);
     }
   }
-  mhal_gpio_high(MXOS_CS);
+  mhal_gpio_high(MXKIT_CS);
 }

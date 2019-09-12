@@ -32,12 +32,12 @@ merr_t APDS9930_I2C_bus_write(uint8_t reg_addr, uint8_t *reg_data, uint8_t cnt)
     array[stringpos + 1] = *(reg_data + stringpos);
   }
 
-  return mhal_i2c_write(MXOS_I2C, APDS9930_ID, array, cnt + 1);
+  return mhal_i2c_write(MXKIT_I2C, APDS9930_ID, array, cnt + 1);
 }
 
 merr_t APDS9930_I2C_bus_read(uint8_t *reg_data, uint8_t cnt)
 {
-  return mhal_i2c_read(MXOS_I2C, APDS9930_ID, reg_data, cnt);
+  return mhal_i2c_read(MXKIT_I2C, APDS9930_ID, reg_data, cnt);
 }
 
 merr_t APDS9930_Write_RegData(uint8_t reg_addr, uint8_t reg_data)
@@ -132,12 +132,12 @@ merr_t apds9930_sensor_init(void)
   uint8_t device_id;
 
   mhal_i2c_pinmux_t pinmux = {
-      .sda = MXOS_SDA,
-      .scl = MXOS_SCL,
+      .sda = MXKIT_SDA,
+      .scl = MXKIT_SCL,
   };
 
   /*int apds9930 sensor i2c device*/
-  err = mhal_i2c_open(MXOS_I2C, I2C_ADDR_WIDTH_7BIT, 100000, &pinmux);
+  err = mhal_i2c_open(MXKIT_I2C, I2C_ADDR_WIDTH_7BIT, 100000, &pinmux);
   require_noerr_quiet(err, exit);
 
   err = APDS9930_Clear_intrtrupt();
@@ -155,5 +155,5 @@ exit:
 
 merr_t apds9930_sensor_deinit(void)
 {
-  return mhal_i2c_close(MXOS_I2C);
+  return mhal_i2c_close(MXKIT_I2C);
 }
